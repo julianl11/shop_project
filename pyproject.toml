@@ -1,0 +1,16 @@
+[project]
+name = "shop-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cv2",
+    "huggingface>=0.0.1",
+    "ipykernel>=7.0.1",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.4",
+    "pandas>=2.3.3",
+    "torch>=2.9.0",
+    "torchvision>=0.24.0",
+]
