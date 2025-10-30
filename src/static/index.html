@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Fäncy Brownie Co. | Jetzt bestellen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f7f3e8; /* Helles Creme */
+            color: #3e2723; /* Dunkelbraun für Text */
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 60px;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            color: #5d4037; /* Mittleres Schokoladenbraun */
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        p.tagline {
+            font-style: italic;
+            color: #8d6e63; /* Kupferbraun */
+            margin-top: 0;
+        }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        input[type="file"] {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #bcaaa4;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            background: #efebe9;
+        }
+        
+        input[type="submit"] {
+            background-color: #5d4037;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        input[type="submit"]:hover {
+            background-color: #4e342e;
+        }
+        
+        #result-image {
+            display: block;
+            margin: 50px auto 0;
+            max-width: 80%; /* Erhöht, um das Bild besser zu sehen */
+            height: auto;
+            border: 3px solid #bcaaa4; /* Heller Rahmen */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>The Fäncy Brownie Co.</h1>
+        <p class="tagline">Ein Biss sagt mehr als tausend Worte.</p>
+    </header>
+
+    <h2>Ihr personalisierter Wunsch-Brownie</h2>
+    
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">
+            Wählen Sie ein Bild (für die Vorschau):
+        </label>
+        <input type="file" name="file" accept="image/*">
+        
+        <input type="submit" value="Brownie kreieren">
+    </form>
+    
+    <img id="result-image" alt="Vorschau Ihres Kreierten Brownies">
+    
+    </body>
+</html>

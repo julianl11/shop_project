@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.ndimage import convolve
-from PIL import Image
+from PIL import Image, ImageOps
 import io
 
-# Konvertiert RGB (von PIL) zu Graustufen (ersetzt cv2.cvtColor)
+# Konvertiert RGB (von PIL) zu Graustufen 
 def manual_cvtColor_RGB2GRAY(image_np):
     R = image_np[:, :, 0]
     G = image_np[:, :, 1]
@@ -20,8 +20,9 @@ def prewitt_edge_detection(image_bytes: bytes):
     """
     # 1. Bild von Bytes laden
     image_rgb = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    image_np = np.array(image_rgb)
-    
+    img = ImageOps.exif_transpose(image_rgb)
+    image_np = np.array(img)
+
     # 2. Graustufenkonvertierung
     gray_image = manual_cvtColor_RGB2GRAY(image_np)
     
