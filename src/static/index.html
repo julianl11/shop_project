@@ -12,7 +12,7 @@
             background-color: #f7f3e8; /* Helles Creme */
             color: #3e2723; /* Dunkelbraun für Text */
             margin: 0;
-            padding: 40px;
+            padding: 40px 20px; /* Mehr Platz an den Seiten */
             text-align: center;
         }
         
@@ -22,9 +22,9 @@
         
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 3em;
+            font-size: 3.5em; /* Etwas größer */
             color: #5d4037; /* Mittleres Schokoladenbraun */
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 5px;
         }
         
@@ -32,71 +32,510 @@
             font-style: italic;
             color: #8d6e63; /* Kupferbraun */
             margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        /* Hauptcontainer für das Formular-Erlebnis */
+        .order-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Oben ausrichten */
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         form {
-            display: inline-block;
+            flex: 2; /* Nimmt mehr Platz ein */
             background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            text-align: left;
         }
         
+        .section-heading {
+            font-family: 'Playfair Display', serif;
+            color: #4e342e;
+            border-bottom: 2px solid #efebe9;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .form-group {
+            margin-bottom: 35px; /* Größerer Abstand zwischen den Schritten */
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0; /* Sanfte Trennung */
+        }
+        
+        .form-group:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #5d4037;
+            font-size: 1.1em;
+        }
+
+        select, input[type="number"], input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bcaaa4;
+            border-radius: 6px;
+            background-color: #efebe9;
+            box-sizing: border-box;
+            font-family: 'Lato', sans-serif;
+            color: #3e2723;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: #5d4037;
+            background-color: #fff;
+            outline: none;
+        }
+
         input[type="file"] {
             display: block;
-            margin: 20px auto;
+            margin: 10px 0;
             border: 1px solid #bcaaa4;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             box-sizing: border-box;
             background: #efebe9;
+            border-radius: 6px;
         }
         
+        /* Button für Bildbearbeitung */
+        #process-image-btn {
+            background-color: #8d6e63; /* Kupferbraun */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+            margin-top: 15px;
+            width: auto; 
+            display: inline-block; 
+        }
+
+        #process-image-btn:hover:not(:disabled) {
+            background-color: #7a5a4c;
+        }
+
+        #process-image-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+
         input[type="submit"] {
+            display: block; 
+            width: 100%;
             background-color: #5d4037;
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
+            padding: 15px 30px;
+            font-size: 1.2em;
             font-weight: 700;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 40px; 
         }
         
         input[type="submit"]:hover {
             background-color: #4e342e;
         }
         
+        /* Vorschau-Bereich */
+        .preview-area {
+            flex: 1; 
+            position: sticky; 
+            top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            height: fit-content; 
+        }
+
+        .preview-area h3 {
+             font-family: 'Playfair Display', serif;
+             color: #5d4037;
+             margin-top: 0;
+        }
+
+        .image-container {
+            position: relative;
+            min-height: 200px; /* Platzhalterhöhe für Spinner */
+        }
+
         #result-image {
             display: block;
-            margin: 50px auto 0;
-            max-width: 80%; /* Erhöht, um das Bild besser zu sehen */
+            width: 100%; 
             height: auto;
-            border: 3px solid #bcaaa4; /* Heller Rahmen */
+            border: 3px solid #bcaaa4; 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             border-radius: 4px;
+        }
+        
+        /* Lade-Spinner (CSS für Ästhetik) */
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #5d4037; /* Brownie-Farbe */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -20px;
+            margin-left: -20px;
+            z-index: 10;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Ältere Brownies Sektion (Upsell) */
+        .alt-brownies-section {
+            background-color: #e8dccb; 
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 50px;
+            border: 2px solid #bcaaa4;
+            text-align: center;
+        }
+
+        .alt-brownies-section h3 {
+            color: #4e342e;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+
+
+
+       .brownie-visual-container {
+            position: relative; 
+            width: 100%;
+            /* 💥 BILDER VERGRÖSSERT: Maximale Breite auf 400px erhöht 💥 */
+            max-width: 400px; 
+            margin: 0 auto;
+            border: 3px solid #bcaaa4; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            overflow: hidden; 
+        }
+
+        /* 🎯 KORRIGIERT: Stile auf beide Overlays anwenden (Komma verwenden) 🎯 */
+        #original-image-overlay, #result-image {
+            position: absolute;
+            /* Positionierung auf der Brownie-Oberfläche anpassen */
+            top: 12.5%;      
+            left: 24%;     
+            width: 52%;    
+            height: 52%;   
+            
+            transform: perspective(600px) rotateX(15deg) rotateY(0deg) rotateZ(20deg); 
+            transform-origin: center center; 
+            
+            object-fit: cover; 
+            opacity: 0.85; 
+            z-index: 10; 
+            border-radius: 2px; 
+        }
+
+        #brownie-base-image, #brownie-base-image-edge {
+            display: block;
+            width: 100%;
+            height: auto;
+            
+        }
+        
+        /* Responsiveness */
+        @media (max-width: 900px) {
+            .order-container {
+                flex-direction: column; 
+            }
+
+            .preview-area {
+                position: static; 
+                margin-top: 40px;
+                order: -1; 
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <h1>The Fäncy Brownie Co.</h1>
-        <p class="tagline">Ein Biss sagt mehr als tausend Worte.</p>
+        <p class="tagline">Ein Biss sagt mehr als tausend Worte – Gestalten Sie Ihr Meisterwerk.</p>
     </header>
 
-    <h2>Ihr personalisierter Wunsch-Brownie</h2>
-    
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="file">
-            Wählen Sie ein Bild (für die Vorschau):
-        </label>
-        <input type="file" name="file" accept="image/*">
+    <div class="order-container">
         
-        <input type="submit" value="Brownie kreieren">
-    </form>
+        <!-- Formular (Sequenziell) -->
+        <!-- WICHTIG: Die Formular-Aktion wird durch JS unterbunden. Der Submit-Button dient nur dem Kauf. -->
+        <form id="brownie-form" action="/order" method="post" enctype="multipart/form-data">
+            
+            <h2 class="section-heading">Ihr personalisierter Wunsch-Brownie</h2>
+
+            <!-- Schritt 1: Größe und Form (Das Fundament) -->
+            <div class="form-group">
+                <h3>Schritt 1: Das Fundament wählen</h3>
+                <label for="size">Größe / Teig-Menge:</label>
+                <select id="size" name="size" required>
+                    <option value="">— Größe wählen —</option>
+                    <option value="small">Klein (ca. 4x4 cm) - Der feine Happen</option>
+                    <option value="medium">Mittel (ca. 6x6 cm) - Der Klassiker</option>
+                    <option value="large">Groß (ca. 8x8 cm) - Für Kenner</option>
+                    <option value="xl">XL (Brownie-Kuchen) - Zum Teilen</option>
+                </select>
+
+                <label for="shape" style="margin-top: 20px;">Form:</label>
+                <select id="shape" name="shape" required>
+                    <option value="">— Form wählen —</option>
+                    <option value="square">Quadratisch (Ästhetisch)</option>
+                    <option value="circle">Rund (Sanft)</option>
+                    <option value="heart">Herz (Liebevoll)</option>
+                    <option value="custom">Individuell (Prestige)</option>
+                </select>
+            </div>
+            
+            <!-- Schritt 2: Toppings und Füllung (Die Veredelung) -->
+            <div class="form-group">
+                <h3>Schritt 2: Die Veredelung</h3>
+                <label for="filling">Füllung (optional, z.B. Erdnussbutter, Ganache):</label>
+                <input type="text" id="filling" name="filling" placeholder="Weiße Schokoladen-Ganache, gesalzenes Karamell">
+
+                <label for="toppings" style="margin-top: 20px;">Toppings (z.B. Goldstaub, Nüsse, Beeren):</label>
+                <input type="text" id="toppings" name="toppings" placeholder="Gehackte Pistazien, Goldstaub, Frische Himbeeren">
+            </div>
+
+            <!-- Schritt 3: Das Persönliche (Die Einzigartigkeit) -->
+            <div class="form-group">
+                <h3>Schritt 3: Ihre einzigartige Note</h3>
+                <label for="image">Bild-Upload (Für die Vorschau oder als essbare Verzierung):</label>
+                <input type="file" name="image" accept="image/*" id="image">
+                <button type="button" id="process-image-btn" disabled>Bild zu Kanten-Design verarbeiten</button>
+                <p style="font-size: 0.9em; color: #8d6e63; margin-top: 15px;">*Das Bild wird an den Server gesendet und mit einem Prewitt-Filter (Kantenerkennung) bearbeitet.</p>
+            </div>
+
+            <!-- Schritt 4: Anzahl (Die Bestellung) -->
+            <div class="form-group">
+                <h3>Schritt 4: Bestätigen und Menge</h3>
+                <label for="quantity">Anzahl der Brownies:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            </div>
+            
+            <input type="submit" value="Brownie-Meisterwerk in den Warenkorb">
+        </form>
+
+        <!-- Vorschau-Bereich (Bleibt visuell präsent) -->
+<div class="preview-area">
+
+            <h3>Ihre Brownie-Vorschau</h3>
+
+            <h4>Originalbild als Verzierung</h4>
+            <div class="brownie-visual-container">
+                <img id="brownie-base-image" src="../data/brownie_raw.png" alt="Brownie-Basis">
+                <img id="original-image-overlay" src="" alt="Hochgeladenes Bild als Overlay" class="hidden">
+            </div>
+            <p style="font-size: 0.9em; color: #8d6e63; margin-top: 15px;">(Ihre Wahl auf dem Brownie)</p>
+
+            <div style="margin-top: 50px;">
+                <h4>Ihr Kanten-Design</h4>
+                <!-- ...existing code... -->
+                <div class="brownie-visual-container">
+                    <img id="brownie-base-image-edge" src="../data/brownie_raw.png" alt="Brownie-Basis für Kanten-Design" class="hidden">
+                    
+                    <div id="loading-spinner" class="loading-spinner hidden"></div>
+                    <img id="result-image" src="" alt="Kanten-Design Vorschau" class="hidden">
+                </div>
+                <!-- ...existing code... -->
+            </div>
+            <p style="font-size: 0.9em; color: #8d6e63; margin-top: 15px;">(Vom Server verarbeitetes Kanten-Design)</p>
+
+            </div>
+
+            <div id="preview-details" style="text-align: left; margin-top: 20px; font-size: 0.95em; color: #5d4037;">
+                <h4>Ihre aktuellen Auswahl:</h4>
+                <p>Größe: <span id="preview-size">N/A</span></p>
+                <p>Form: <span id="preview-shape">N/A</span></p>
+                <p>Füllung: <span id="preview-filling">N/A</span></p>
+                <p>Toppings: <span id="preview-toppings">N/A</span></p>
+                <p>Anzahl: <span id="preview-quantity">N/A</span></p>
+            </div>
+        </div>
     
-    <img id="result-image" alt="Vorschau Ihres Kreierten Brownies">
+    <!-- Ältere Brownies Sektion (Upsell/Zusatz) -->
+    <div class="alt-brownies-section">
+        <h3>🎁 Second-Chance-Süß: Unsere nachhaltige Option (-25%)</h3>
+        <p>Gönnen Sie unseren **Brownies von gestern** eine zweite Chance. Sie sind immer noch köstlich und kommen mit **25% Rabatt**. Ein perfekter, nachhaltiger Zusatz zu Ihrer Bestellung!</p>
+        <div style="max-width: 300px; margin: 15px auto 0;">
+             <label for="old-brownies-qty" style="display: block; text-align: left; color: #4e342e;">Anzahl Second-Chance Brownies hinzufügen:</label>
+            <input type="number" id="old-brownies-qty" name="old_brownies_qty" min="0" value="0">
+        </div>
+    </div>
     
-    </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Element-Referenzen abrufen
+    const imageInput = document.getElementById('image');
+    const processImageBtn = document.getElementById('process-image-btn');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    
+    // Basis- und Overlay-Bilder
+    const resultImage = document.getElementById('result-image'); // Kanten-Design Overlay
+    const originalImageOverlay = document.getElementById('original-image-overlay'); // Originalbild Overlay
+    const brownieBaseImage = document.getElementById('brownie-base-image'); // Basisbild Original
+    const brownieBaseImageEdge = document.getElementById('brownie-base-image-edge'); // Basisbild Kanten-Design
+    
+    // Text-Vorschau-Elemente
+    const previewSize = document.getElementById('preview-size');
+    const previewShape = document.getElementById('preview-shape');
+    const previewFilling = document.getElementById('preview-filling');
+    const previewToppings = document.getElementById('preview-toppings');
+    const previewQuantity = document.getElementById('preview-quantity');
+    
+    // Konstante für den Brownie-Platzhalterpfad
+    const defaultBrownieImagePath = '../data/brownie_raw.png'; 
+
+    // Initialisierung: Basisbilder setzen
+    brownieBaseImage.src = defaultBrownieImagePath;
+    brownieBaseImageEdge.src = defaultBrownieImagePath;
+
+
+    // ---------------------------------------------------------------------
+    // 2. Funktion zur Aktualisierung der Text-Vorschau
+    // ---------------------------------------------------------------------
+    function updatePreviewDetails() {
+        previewSize.textContent = document.getElementById('size').options[document.getElementById('size').selectedIndex].text || 'N/A';
+        previewShape.textContent = document.getElementById('shape').options[document.getElementById('shape').selectedIndex].text || 'N/A';
+        previewFilling.textContent = document.getElementById('filling').value || 'Keine';
+        previewToppings.textContent = document.getElementById('toppings').value || 'Keine';
+        previewQuantity.textContent = document.getElementById('quantity').value || '1';
+    }
+
+    // Event-Listener für Formularelemente
+    document.querySelectorAll('select, input[type="text"], input[type="number"]').forEach(element => {
+        element.addEventListener('change', updatePreviewDetails);
+        element.addEventListener('keyup', updatePreviewDetails);
+    });
+    updatePreviewDetails(); // Initialer Aufruf
+    
+
+    // ---------------------------------------------------------------------
+    // 3. Bild-Upload-Vorschau (Originalbild)
+    // ---------------------------------------------------------------------
+    imageInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Originalbild im Overlay anzeigen
+                originalImageOverlay.src = e.target.result;
+                originalImageOverlay.classList.remove('hidden');
+                
+                // Kanten-Design (resultImage) vorerst verstecken/zurücksetzen
+                resultImage.src = ""; 
+                resultImage.classList.add('hidden'); 
+            };
+            reader.readAsDataURL(this.files[0]);
+            processImageBtn.disabled = false; // Button aktivieren
+        } else {
+            // Zurücksetzen, wenn kein Bild ausgewählt ist
+            resultImage.src = "";
+            resultImage.classList.add('hidden');
+            originalImageOverlay.src = "";
+            originalImageOverlay.classList.add('hidden'); 
+            processImageBtn.disabled = true; 
+        }
+    });
+
+
+    // ---------------------------------------------------------------------
+    // 4. Bildverarbeitung (API-Kommunikation)
+    // ---------------------------------------------------------------------
+    processImageBtn.addEventListener('click', async function() {
+        if (!imageInput.files || !imageInput.files[0]) {
+            console.error("Bitte laden Sie zuerst ein Bild hoch.");
+            return;
+        }
+        
+        // Show the brownie base image edge when processing starts
+        brownieBaseImageEdge.classList.remove('hidden');
+        
+        // Setup: Ladezustand aktivieren
+        processImageBtn.disabled = true;
+        loadingSpinner.classList.remove('hidden');
+        resultImage.classList.add('hidden'); 
+        
+        // Platzhalter-Basisbild abdunkeln, um den Ladevorgang zu visualisieren
+        brownieBaseImageEdge.style.opacity = '0.5'; 
+
+        const formData = new FormData();
+        formData.append('file', imageInput.files[0]);
+
+        try {
+            const response = await fetch('/upload', { 
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Serverfehler: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json(); 
+
+            if (data.processed_image_src) {
+                // Erfolg: Kanten-Design anzeigen
+                resultImage.src = data.processed_image_src; 
+                resultImage.classList.remove('hidden'); 
+                console.log("Bild erfolgreich verarbeitet und Vorschau aktualisiert!");
+            } else {
+                throw new Error("Antwort enthielt keinen Base64-Bild-String.");
+            }
+
+        } catch (error) {
+            // Fehlerbehandlung
+            console.error("Fehler bei der Bildverarbeitung:", error);
+            alert(`Fehler bei der Verarbeitung. Details: ${error.message}`);
+            resultImage.src = "https://via.placeholder.com/300x200/ff0000/ffffff?text=FEHLER";
+            resultImage.classList.remove('hidden'); // Fehlerbild anzeigen
+            
+            // Zurücksetzen Original-Overlay (falls gewünscht)
+            originalImageOverlay.src = ""; 
+            originalImageOverlay.classList.add('hidden');
+        } finally {
+            // Cleanup: Ladezustand beenden
+            loadingSpinner.classList.add('hidden');
+            processImageBtn.disabled = false;
+            // Opazität des Basisbildes zurücksetzen
+            brownieBaseImageEdge.style.opacity = '1'; 
+        }
+    });
+});
+</script>
+</body>
 </html>

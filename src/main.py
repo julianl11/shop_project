@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import io
@@ -36,6 +36,8 @@ async def process_image(request: Request, file: UploadFile = File(...)):
     encoded_img = base64.b64encode(img_byte_arr.getvalue()).decode("utf-8")
     image_src = f"data:image/png;base64,{encoded_img}"
     # 4. Bild-Bytes als StreamingResponse zurückgeben
+    return JSONResponse(content={"processed_image_src": image_src})
+
     return templates.TemplateResponse("result.html", {
             "request": request,
             "processed_image_src": image_src # Übergeben Sie den Base64-String
