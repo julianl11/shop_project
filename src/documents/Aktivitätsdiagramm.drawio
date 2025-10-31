@@ -1,0 +1,161 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" version="28.2.8">
+  <diagram name="Seite-1" id="LArvLV9_rbc8M1moknQZ">
+    <mxGraphModel dx="1224" dy="1102" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" background="light-dark(#FFFFFF,#0000FF)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ObSsFwSnHV_658KzexOM-23" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="30" y="400" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-24" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="ObSsFwSnHV_658KzexOM-23">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="490" as="sourcePoint" />
+            <mxPoint x="150" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-25" value="Website betreten" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-26" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="429.5" as="sourcePoint" />
+            <mxPoint x="320" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-27" value="Produkt auswählen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-29" value="Teigmenge festlegen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="400" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-30" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="549.5" y="460" as="sourcePoint" />
+            <mxPoint x="549.5" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-31" value="" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="510" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-32" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="ObSsFwSnHV_658KzexOM-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590" y="549.5" as="sourcePoint" />
+            <mxPoint x="720" y="550" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="760" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-33" value="Form individualisieren = nein" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="620" y="500" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-34" value="Bestellen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="520" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-37" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="549.5" y="590" as="sourcePoint" />
+            <mxPoint x="550" y="660" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-38" value="Form individualisieren = ja" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="610" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-39" value="Bild hochladen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="660" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-40" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="549.5" y="720" as="sourcePoint" />
+            <mxPoint x="550" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-41" value="Visualisierung anzeigen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="790" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-42" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590" y="939.5" as="sourcePoint" />
+            <mxPoint x="700" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-43" value="In Warenkorb legen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="910" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-45" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="429.5" as="sourcePoint" />
+            <mxPoint x="490" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-46" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="549.5" y="850" as="sourcePoint" />
+            <mxPoint x="549.5" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-47" value="" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="900" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-48" value="Zufrieden = ja" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="580" y="960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-49" value="Zufrieden = nein" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="950" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-50" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ObSsFwSnHV_658KzexOM-47" target="ObSsFwSnHV_658KzexOM-31">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="960" as="sourcePoint" />
+            <mxPoint x="410" y="550" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="420" y="940" />
+              <mxPoint x="420" y="820" />
+              <mxPoint x="420" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-51" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="939.5" as="sourcePoint" />
+            <mxPoint x="910" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-52" value="" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="910" y="900" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-53" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="ObSsFwSnHV_658KzexOM-52">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="920" y="730" as="sourcePoint" />
+            <mxPoint x="950" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-54" value="Bestellung fertig = ja" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="970" y="820" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-55" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.175;entryY=1.017;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="ObSsFwSnHV_658KzexOM-52" target="ObSsFwSnHV_658KzexOM-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="870" y="1120" as="sourcePoint" />
+            <mxPoint x="920" y="1070" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="950" y="1040" />
+              <mxPoint x="660" y="1040" />
+              <mxPoint x="340" y="1040" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-56" value="Bestellung fertig = nein" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="1060" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-57" value="Warenkorb anzeigen" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="700" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ObSsFwSnHV_658KzexOM-58" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="ObSsFwSnHV_658KzexOM-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="949.5" y="700" as="sourcePoint" />
+            <mxPoint x="949.5" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
