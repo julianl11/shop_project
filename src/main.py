@@ -9,7 +9,6 @@ from edges import prewitt_edge_detection # Importiert Ihre Kantenerkennungslogik
 app = FastAPI()
 
 # 1. Statische Dateien (für die HTML-Datei, falls nötig)
-# Erstellt einen Ordner 'static' und legt dort Ihre index.html ab.
 app.mount("/data", StaticFiles(directory="data"), name="data")
 
 templates = Jinja2Templates(directory="/Users/julianlorenz/Documents/Fallstudie_website/shop_project/src/static/")
