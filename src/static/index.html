@@ -292,10 +292,18 @@
         <p class="tagline">Ein Biss sagt mehr als tausend Worte – Gestalten Sie Ihr Meisterwerk.</p>
     </header>
 
+    <p>Bitte öffnen Sie die Datei <strong>updated_order_form.html</strong> in Ihrem Browser, 
+               um das Bestellformular zu sehen und einen Artikel in den Warenkorb zu legen.</p>
+            <p>Nach dem Hinzufügen von Artikeln können Sie zu folgenden Seiten navigieren:</p>
+            <ul>
+                <li><a href="/cart">Zum Warenkorb</a></li>
+                <li><a href="/checkout">Direkt zum Checkout</a></li>
+    </ul>
+
     <div class="order-container">
         
         <!-- Formular (Sequenziell) -->
-        <!-- WICHTIG: Die Formular-Aktion wird durch JS unterbunden. Der Submit-Button dient nur dem Kauf. -->
+        <!-- WICHTIG: Die Formular-Aktion zielt nun auf den FastAPI-Endpunkt /order und leitet weiter -->
         <form id="brownie-form" action="/order" method="post" enctype="multipart/form-data">
             
             <h2 class="section-heading">Ihr personalisierter Wunsch-Brownie</h2>
@@ -336,6 +344,8 @@
             <div class="form-group">
                 <h3>Schritt 3: Ihre einzigartige Note</h3>
                 <label for="image">Bild-Upload (Für die Vorschau oder als essbare Verzierung):</label>
+                <!-- WICHTIG: Das Bild wird hier zwar hochgeladen, aber nicht mit dem Warenkorb-Submit gesendet. 
+                   Die Bildverarbeitung erfolgt über den separaten JS-Fetch-Aufruf. -->
                 <input type="file" name="image" accept="image/*" id="image">
                 <button type="button" id="process-image-btn" disabled>Bild zu Kanten-Design verarbeiten</button>
                 <p style="font-size: 0.9em; color: #8d6e63; margin-top: 15px;">*Das Bild wird an den Server gesendet und mit einem Prewitt-Filter (Kantenerkennung) bearbeitet.</p>
@@ -344,15 +354,29 @@
             <!-- Schritt 4: Anzahl (Die Bestellung) -->
             <div class="form-group">
                 <h3>Schritt 4: Bestätigen und Menge</h3>
-                <label for="quantity">Anzahl der Brownies:</label>
+                <label for="quantity">Anzahl der personalisierten Brownies:</label>
                 <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            </div>
+            
+            <!-- 
+            WICHTIG: Die Second-Chance-Sektion wurde in das Formular verschoben, 
+            damit das Feld 'old_brownies_qty' beim Submit mitgesendet wird. 
+            -->
+            <!-- Schritt 5: Second-Chance (Der Upsell) -->
+            <div class="form-group alt-brownies-section" style="background-color: #e8dccb; padding: 30px; border-radius: 8px; border: 2px solid #bcaaa4; margin-top: 50px;">
+                <h3>🎁 Schritt 5: Second-Chance-Süß (-25%)</h3>
+                <p>Gönnen Sie unseren **Brownies von gestern** eine zweite Chance. Sie sind immer noch köstlich und kommen mit **25% Rabatt**. Ein perfekter, nachhaltiger Zusatz zu Ihrer Bestellung!</p>
+                <div style="max-width: 300px; margin: 15px auto 0; text-align: left;">
+                     <label for="old-brownies-qty" style="display: block; color: #4e342e;">Anzahl Second-Chance Brownies hinzufügen:</label>
+                    <input type="number" id="old-brownies-qty" name="old_brownies_qty" min="0" value="0">
+                </div>
             </div>
             
             <input type="submit" value="Brownie-Meisterwerk in den Warenkorb">
         </form>
 
         <!-- Vorschau-Bereich (Bleibt visuell präsent) -->
-<div class="preview-area">
+        <div class="preview-area">
 
             <h3>Ihre Brownie-Vorschau</h3>
 
@@ -386,18 +410,7 @@
                 <p>Toppings: <span id="preview-toppings">N/A</span></p>
                 <p>Anzahl: <span id="preview-quantity">N/A</span></p>
             </div>
-        </div>
-    
-    <!-- Ältere Brownies Sektion (Upsell/Zusatz) -->
-    <div class="alt-brownies-section">
-        <h3>🎁 Second-Chance-Süß: Unsere nachhaltige Option (-25%)</h3>
-        <p>Gönnen Sie unseren **Brownies von gestern** eine zweite Chance. Sie sind immer noch köstlich und kommen mit **25% Rabatt**. Ein perfekter, nachhaltiger Zusatz zu Ihrer Bestellung!</p>
-        <div style="max-width: 300px; margin: 15px auto 0;">
-             <label for="old-brownies-qty" style="display: block; text-align: left; color: #4e342e;">Anzahl Second-Chance Brownies hinzufügen:</label>
-            <input type="number" id="old-brownies-qty" name="old_brownies_qty" min="0" value="0">
-        </div>
-    </div>
-    
+        </div>    
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Element-Referenzen abrufen
@@ -497,6 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('file', imageInput.files[0]);
 
         try {
+            // Dies ist ein Platzhalter-Endpunkt. Stellen Sie sicher, dass dieser in FastAPI existiert!
             const response = await fetch('/upload', { 
                 method: 'POST',
                 body: formData
@@ -520,7 +534,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             // Fehlerbehandlung
             console.error("Fehler bei der Bildverarbeitung:", error);
-            alert(`Fehler bei der Verarbeitung. Details: ${error.message}`);
+            // Bitte ersetzen Sie window.alert in einer Produktionsumgebung durch ein UI-Modal.
+            alert(`Fehler bei der Verarbeitung. Details: ${error.message}`); 
             resultImage.src = "https://via.placeholder.com/300x200/ff0000/ffffff?text=FEHLER";
             resultImage.classList.remove('hidden'); // Fehlerbild anzeigen
             
