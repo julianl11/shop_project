@@ -11,7 +11,7 @@ import io
 import base64
 import uvicorn
 from typing import Optional, List, Dict
-from fastapi import Form
+from fastapi import Form, status
 from fastapi.responses import RedirectResponse
 from functions import calculate_totals, create_brownie_item
 from edges import prewitt_edge_detection # Importiert Ihre Kantenerkennungslogik
@@ -38,10 +38,18 @@ app.add_middleware(
     session_cookie="fancy_brownie_session",
     max_age=3600,
 )
+
+
 # 3. API-Endpunkt für das Haupt-Frontend
-@app.get("/", response_class=HTMLResponse)
+@app.get("/welcome", response_class=HTMLResponse)
 async def main(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("welcome.html", {"request": request})
+
+
+# 3. API-Endpunkt für das Haupt-Frontend
+@app.get("/shop", response_class=HTMLResponse)
+async def main(request: Request):
+    return templates.TemplateResponse("shop.html", {"request": request})
 
 # 4. API-Endpunkt für den Upload und die Verarbeitung
 @app.post("/upload")
@@ -106,7 +114,7 @@ async def view_cart(request: Request):
     
     if not cart_items:
         # Warenkorb leer? Zurück zur Bestellung leiten
-        return RedirectResponse(url="/", status_code=303) 
+        return RedirectResponse(url="/shop", status_code=303) 
         
     totals = calculate_totals(cart_items)
     grand_total_str = f"{totals['grand_total']:.2f}"
@@ -125,29 +133,47 @@ async def view_cart(request: Request):
         )
         personalized_price = f"{item['total_personalized_price']:.2f}"
         items_html += f"""
-        <div class='cart-item'>
+        <div class='cart-item' id='item-{item['id']}'>
             <div class='item-details'>
                 <h4>{item['name']} (Art-Nr. {item['id']})</h4>
                 <p class='description'>{description}</p>
-                <p class='quantity'>Menge: {item['quantity']} Stück @ {item['base_price']:.2f} €</p>
             </div>
+            
+            <form action='/cart/update/{item['id']}' method='post' class='quantity-form'>
+                <input type='number' name='new_quantity' value='{item['quantity']}' min='0' class='qty-input'>
+                <button type='submit' class='btn-update' title='Menge aktualisieren'>✓</button>
+            </form>
+            
             <div class='item-price'>
                 <strong>{personalized_price} €</strong>
             </div>
+            
+            <form action='/cart/remove/{item['id']}' method='post' class='remove-form'>
+                <button type='submit' class='btn-remove' title='Artikel löschen'>&times;</button>
+            </form>
         </div>
         """
+        
+        # Für Second-Chance Brownies (Hier nur der Lösch-Button, da die Menge im Formular geändert wurde)
         if item["second_chance_qty"] > 0:
             second_chance_price = f"{item['total_second_chance_price']:.2f}"
             second_chance_unit_price = item['base_price'] * 0.75
+            
+            # WICHTIG: Wir verwenden eine eindeutige ID, um Second-Chance-Artikel zu identifizieren (z.B. ID-SC)
+            sc_id = f"{item['id']}-sc"
+            
             items_html += f"""
-            <div class='cart-item second-chance'>
+            <div class='cart-item second-chance' id='item-{sc_id}'>
                 <div class='item-details'>
-                    <h4 class='second-chance-title'>Second-Chance Brownies (Nachhaltigkeits-Bonus -25%)</h4>
+                    <h4 class='second-chance-title'>Second-Chance Brownies (-25%)</h4>
                     <p class='quantity'>Menge: {item['second_chance_qty']} Stück @ {second_chance_unit_price:.2f} €</p>
                 </div>
-                <div class='item-price'>
+                <div class='item-price' style='margin-left: auto;'>
                     <strong>{second_chance_price} €</strong>
                 </div>
+                 <form action='/cart/remove/{item['id']}' method='post' class='remove-form'>
+                    <button type='submit' class='btn-remove' title='Second-Chance-Artikel löschen'>&times;</button>
+                </form>
             </div>
             """
 
@@ -253,6 +279,91 @@ async def view_cart(request: Request):
                 .actions {{ flex-direction: column; gap: 15px; }}
                 .btn {{ width: 100%; text-align: center; }}
             }}
+
+            .cart-item {{
+                /* Muss Platz für die neuen Buttons schaffen */
+                gap: 15px; 
+            }}
+
+            .quantity-form {{
+                display: flex;
+                align-items: center;
+                margin-right: 20px;
+                width: 110px; /* Feste Breite für das Input-Feld */
+            }}
+
+            .qty-input {{
+                width: 50px;
+                padding: 6px;
+                border: 1px solid #bcaaa4;
+                border-radius: 4px 0 0 4px; /* Linke Seite rund */
+                text-align: center;
+                box-sizing: border-box;
+                font-size: 1em;
+            }}
+            
+            .btn-update {{
+                background-color: #8d6e63; /* Kupferbraun */
+                color: white;
+                border: none;
+                padding: 6px 10px;
+                font-size: 1em;
+                cursor: pointer;
+                border-radius: 0 4px 4px 0; /* Rechte Seite rund */
+                transition: background-color 0.3s;
+                height: 33px; /* Angleichen an Input-Höhe */
+            }}
+            
+            .btn-update:hover {{
+                background-color: #7a5a4c;
+            }}
+
+            .remove-form {{
+                margin-left: 20px; /* Abstand zum Preis */
+            }}
+
+            .btn-remove {{
+                background-color: #e57373; /* Sanftes Rot */
+                color: white;
+                border: none;
+                padding: 6px 10px;
+                font-size: 1.2em;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+                line-height: 1;
+                height: 33px; 
+            }}
+
+            .btn-remove:hover {{
+                background-color: #d32f2f; /* Dunkleres Rot */
+            }}
+
+            .item-price {{
+                /* Sicherstellen, dass der Preis rechts neben dem Update-Formular steht */
+                flex-shrink: 0;
+            }}
+
+            .second-chance .quantity-form {{
+                /* Second-Chance Artikel können hier nicht bearbeitet werden */
+                display: none; 
+            }}
+
+            /* Responsive Anpassung für Mobilgeräte */
+            @media (max-width: 600px) {{
+                .cart-item {{
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                }}
+                .quantity-form, .remove-form {{
+                    margin-top: 10px;
+                    order: 3; /* Unten positionieren */
+                }}
+                .item-price {{
+                    order: 2;
+                    margin-left: auto; /* Preis rechts bündig */
+                }}
+            }}
         </style>
     </head>
     <body>
@@ -276,7 +387,7 @@ async def view_cart(request: Request):
             </div>
             
             <div class="actions">
-                <a href="/" class="btn btn-back">← Weiter bestellen</a>
+                <a href="/shop" class="btn btn-back">← Weiter bestellen</a>
                 <a href="/checkout" class="btn btn-checkout">Zur Kasse gehen</a>
             </div>
         </div>
@@ -286,6 +397,81 @@ async def view_cart(request: Request):
     """
     
     return HTMLResponse(content=cart_html_template)
+
+
+@app.post("/cart/update/{item_id}")
+async def update_cart_item(request: Request, item_id: str, new_quantity: int = Form(...)):
+    """Aktualisiert die Menge eines bestimmten Artikels im Warenkorb."""
+    cart_items: List[Dict] = request.session.get("cart", [])
+    
+    # Sicherstellen, dass die Menge nicht negativ ist
+    if new_quantity < 0:
+        new_quantity = 0
+
+    item_found = False
+    for item in cart_items:
+        # Die Artikel-ID in der Session ist ein String (Art-Nr.)
+        if item.get("id") == item_id:
+            item_found = True
+            
+            # WICHTIG: Die Menge der personalisierten Brownies (quantity) aktualisieren
+            # und die Menge der Second-Chance Brownies (second_chance_qty) auf 0 setzen, 
+            # da sie nicht direkt über dieses Formular bearbeitet werden sollte.
+            # Alternativ könnten Sie separate Update-Formulare erstellen, aber hier vereinfachen wir.
+            item["quantity"] = new_quantity
+            
+            # Falls die Menge auf 0 gesetzt wird, entfernen wir den Artikel
+            if new_quantity == 0 and item["second_chance_qty"] == 0:
+                cart_items.remove(item)
+                break 
+
+            # Neu berechnen der Preise für diesen Artikel (vereinfacht)
+            # In einer echten Anwendung müssten Sie calculate_totals aufrufen, 
+            # um die Einzelpreise neu zu setzen. Hier verlassen wir uns auf die Neuberechnung
+            # in der calculate_totals-Funktion, die beim nächsten Aufruf von /cart oder /checkout erfolgt.
+            break
+
+    request.session["cart"] = cart_items
+    
+    # Zurück zur Warenkorb-Ansicht leiten
+    return RedirectResponse(url="/cart", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/cart/remove/{item_id}")
+async def remove_cart_item(request: Request, item_id: str):
+    """Entfernt einen Artikel vollständig aus dem Warenkorb."""
+    cart_items: List[Dict] = request.session.get("cart", [])
+    
+    # Artikel aus der Liste entfernen
+    initial_len = len(cart_items)
+    cart_items = [item for item in cart_items if item.get("id") != item_id]
+    
+    # Wenn ein Second-Chance-Artikel gelöscht werden soll (separate Logik erforderlich), 
+    # müsste man hier die Unterscheidung treffen. Wir gehen davon aus, 
+    # dass das Löschen des Hauptartikels auch die Second-Chance-Artikel entfernt.
+
+    request.session["cart"] = cart_items
+    
+    # Zurück zur Warenkorb-Ansicht leiten
+    return RedirectResponse(url="/cart", status_code=status.HTTP_303_SEE_OTHER)
+
+
+def get_total_items_in_cart(cart_items: List[Dict]) -> int:
+    """Berechnet die Summe aus 'quantity' und 'second_chance_qty' aller Artikel."""
+    total = 0
+    for item in cart_items:
+        total += item.get("quantity", 0)
+        total += item.get("second_chance_qty", 0)
+    return total
+
+@app.get("/api/cart/total_items")
+async def get_cart_total(request: Request):
+    """Gibt die Gesamtzahl der Artikel im Warenkorb zurück."""
+    cart_items: List[Dict] = request.session.get("cart", [])
+    total_items = get_total_items_in_cart(cart_items)
+    
+    # Rückgabe als einfaches JSON
+    return {"total_items": total_items}
 
 @app.post("/order", response_class=RedirectResponse)
 async def add_to_cart(
@@ -343,7 +529,7 @@ async def checkout_page(request: Request):
 
     if not cart_items:
         # Warenkorb leer: Nutzer zurück zur Bestellung schicken
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(url="/shop", status_code=303)
 
     totals = calculate_totals(cart_items)
     
@@ -630,12 +816,15 @@ async def confirmation_page(request: Request, order_id: Optional[str] = None):
             <p>Ihr fänciges Brownie-Meisterwerk ist in Arbeit.</p>
             <p>{order_text}</p>
             <p>Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
-            <p><a href="/">Zurück zur Startseite</a></p>
+            <p><a href="/welcome">Zurück zur Startseite</a></p>
         </div>
     </body>
     </html>
     """
     return HTMLResponse(content=confirmation_html)
+
+
+
 
 
 

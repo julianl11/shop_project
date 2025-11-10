@@ -35,6 +35,26 @@
             font-size: 1.2em;
         }
 
+        /* NEUER STIL: Button zur Frontpage */
+        .back-to-home {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 15px;
+            text-decoration: none;
+            color: #5d4037; 
+            border: 1px solid #bcaaa4;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .back-to-home:hover {
+            background-color: #efebe9;
+            color: #4e342e;
+            border-color: #8d6e63;
+        }
+        /* ENDE NEUER STIL */
+
         /* Hauptcontainer für das Formular-Erlebnis */
         .order-container {
             display: flex;
@@ -271,6 +291,60 @@
             height: auto;
             
         }
+
+        #cart-fixed-widget {
+            /* Feste Position in der oberen rechten Ecke */
+            position: fixed; 
+            top: 20px;
+            right: 20px;
+            /* Hintergrund und Styling */
+            background-color: #5d4037; /* Mittleres Schokoladenbraun */
+            color: #f7f3e8; /* Helles Creme für den Text */
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            /* Sicherstellen, dass er über allem liegt */
+            z-index: 1000; 
+            text-align: center;
+            font-size: 0.9em;
+            width: 150px; /* Feste, unauffällige Breite */
+            transition: background-color 0.3s;
+        }
+
+        #cart-fixed-widget:hover {
+            background-color: #4e342e; /* Dunkler bei Hover */
+        }
+
+        #cart-summary {
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            white-space: nowrap; /* Verhindert Zeilenumbruch */
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+
+        .cart-link, .checkout-link {
+            /* Buttons/Links im Widget-Stil */
+            background-color: #8d6e63; /* Kupferbraun */
+            color: white;
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 4px;
+            flex-grow: 1;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-link {
+            background-color: #8d6e63; /* Kupferbraun */
+        }
+
+        .cart-link:hover, .checkout-link:hover {
+            background-color: #7a5a4c; 
+        }
         
         /* Responsiveness */
         @media (max-width: 900px) {
@@ -290,16 +364,14 @@
     <header>
         <h1>The Fäncy Brownie Co.</h1>
         <p class="tagline">Ein Biss sagt mehr als tausend Worte – Gestalten Sie Ihr Meisterwerk.</p>
+        
+        <!-- NEUER BUTTON ZUR STARTSEITE -->
+        <a href="/welcome" class="back-to-home">← Zurück zur Familienstory</a>
     </header>
 
     <p>Bitte öffnen Sie die Datei <strong>updated_order_form.html</strong> in Ihrem Browser, 
                um das Bestellformular zu sehen und einen Artikel in den Warenkorb zu legen.</p>
             <p>Nach dem Hinzufügen von Artikeln können Sie zu folgenden Seiten navigieren:</p>
-            <ul>
-                <li><a href="/cart">Zum Warenkorb</a></li>
-                <li><a href="/checkout">Direkt zum Checkout</a></li>
-    </ul>
-
     <div class="order-container">
         
         <!-- Formular (Sequenziell) -->
@@ -409,7 +481,19 @@
                 <p>Füllung: <span id="preview-filling">N/A</span></p>
                 <p>Toppings: <span id="preview-toppings">N/A</span></p>
                 <p>Anzahl: <span id="preview-quantity">N/A</span></p>
+
             </div>
+
+        <div id="cart-fixed-widget">
+            <div class="cart-content">
+                <p id="cart-summary">Warenkorb: **0** Artikel</p>
+                <div class="cart-actions">
+                    <a href="/cart" class="cart-link">🛒 Anzeigen</a>
+                    <a href="/checkout" class="checkout-link">💳 Zur Kasse</a>
+                </div>
+            </div>
+        </div>
+            
         </div>    
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -438,6 +522,36 @@ document.addEventListener('DOMContentLoaded', function() {
     brownieBaseImage.src = defaultBrownieImagePath;
     brownieBaseImageEdge.src = defaultBrownieImagePath;
 
+    const cartSummary = document.getElementById('cart-summary');
+    const quantityInput = document.getElementById('quantity');
+    const oldBrowniesQtyInput = document.getElementById('old-brownies-qty');
+    
+    // NEU: Funktion zur Aktualisierung der Warenkorb-Zusammenfassung (vom Backend)
+    async function fetchAndUpdateCartSummary() {
+        try {
+            const response = await fetch('/api/cart/total_items');
+            if (!response.ok) {
+                console.error("Fehler beim Abrufen der Warenkorb-Anzahl.");
+                cartSummary.innerHTML = `Warenkorb: **0** Artikel`;
+                return;
+            }
+            const data = await response.json();
+            const totalItems = data.total_items || 0;
+            
+            cartSummary.innerHTML = `Warenkorb: **${totalItems}** Artikel`;
+        } catch (error) {
+            console.error("Netzwerkfehler beim Abrufen des Warenkorbs:", error);
+            cartSummary.innerHTML = `Warenkorb: **0** Artikel`;
+        }
+    }
+    
+    // Event-Listener für Mengen-Inputs (aktualisieren NUR die Formular-Vorschau)
+    quantityInput.addEventListener('change', updatePreviewDetails);
+    quantityInput.addEventListener('keyup', updatePreviewDetails);
+    oldBrowniesQtyInput.addEventListener('change', updatePreviewDetails);
+    oldBrowniesQtyInput.addEventListener('keyup', updatePreviewDetails);
+    
+    fetchAndUpdateCartSummary(); // Initialer Aufruf der tatsächlichen Warenkorb-Anzahl
 
     // ---------------------------------------------------------------------
     // 2. Funktion zur Aktualisierung der Text-Vorschau

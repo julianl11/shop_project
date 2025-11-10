@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>The Fäncy Brownie Co. | Handwerkliche Meisterwerke</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+        
+        :root {
+            --color-primary: #5d4037; /* Mittleres Schokoladenbraun */
+            --color-secondary: #8d6e63; /* Kupferbraun */
+            --color-background: #f7f3e8; /* Helles Creme */
+            --color-text: #3e2723; /* Dunkelbraun */
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* --- Hero Sektion --- */
+        .hero-section {
+            background: linear-gradient(rgba(247, 243, 232, 0.8), rgba(247, 243, 232, 0.9)), url('pfad/zum/hintergrundbild_kakao.jpg') center/cover;
+            padding: 100px 20px 80px;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 5em;
+            color: var(--color-primary);
+            letter-spacing: 5px;
+            margin: 0 0 10px 0;
+            line-height: 1;
+        }
+
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            color: var(--color-secondary);
+            font-style: italic;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        /* --- Story Sektion --- */
+        .story-section {
+            padding: 80px 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .story-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--color-secondary);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .story-content {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .story-text {
+            flex: 1;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .story-image {
+            flex: 1;
+            max-width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 5px solid var(--color-primary);
+        }
+
+        /* --- Funnel Buttons --- */
+        .funnel-actions {
+            background-color: var(--color-primary);
+            padding: 60px 20px;
+        }
+
+        .funnel-actions p {
+            color: var(--color-background);
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .btn-funnel {
+            display: inline-block;
+            background-color: #fff;
+            color: var(--color-primary);
+            padding: 15px 35px;
+            margin: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s;
+            font-size: 1.1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-funnel:hover {
+            background-color: var(--color-secondary);
+            color: white;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Footer (Minimalistisch) --- */
+        footer {
+            padding: 20px;
+            font-size: 0.9em;
+            color: #8d6e63;
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 900px) {
+            .hero-title {
+                font-size: 3.5em;
+            }
+            .story-content {
+                flex-direction: column;
+            }
+            .story-section h2 {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <h1 class="hero-title">The Fäncy Brownie Co.</h1>
+        <p class="hero-subtitle">Wo Familientradition auf modernes Meisterwerk trifft.</p>
+        
+        <a href="/shop" class="btn-funnel">🍫 Sofort Ihr Meisterstück gestalten</a>
+        <a href="#story" class="btn-funnel" style="background-color: var(--color-secondary); color: white;">🕰 Unsere Geschichte entdecken</a>
+    </section>
+
+    <hr>
+
+    <section id="story" class="story-section">
+        <h2>Geschmack, der eine Geschichte erzählt</h2>
+        <div class="story-content">
+            <div class="story-text">
+                <p>Unsere Geschichte beginnt nicht in einer modernen Großküche, sondern in der kleinen Backstube von Urgroßmutter Elara, vor über 100 Jahren. Ihr geheimes Rezept für den perfekten Brownie – außen knusprig, innen zart schmelzend – wurde von Generation zu Generation weitergegeben.</p>
+                <p>Jeder Brownie bei **The Fäncy Brownie Co.** ist heute noch eine Hommage an Elaras kompromisslose Liebe zu besten Zutaten: echte belgische Schokolade, cremige Butter und nur das feinste Kakaopulver. </p>
+                <p>Heute kombinieren wir dieses Erbe mit modernster Technik, um Ihnen das ultimative Personalisierungserlebnis zu bieten. Gestalten Sie Ihr essbares Kunstwerk, das sowohl das Herz als auch den Gaumen berührt.</p>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1596701140643-469614766f60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wyMDkyMnwwfDF8c2VhcmNofDE3fHxicm93bmllcyUyMGNvZmZlZSUyMHRvcHxlbnwwfHx8fDE3MDAwMDAwMDB8MA&ixlib=rb-4.0.3&q=80&w=1080" alt="Geschichtliches Brownie-Foto" class="story-image">
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="funnel-actions">
+        <p>Sind Sie bereit, ein Stück Geschichte zu probieren und es zu Ihrem eigenen zu machen?</p>
+        
+        <a href="/shop" class="btn-funnel">➡️ Brownie-Größe & Form wählen</a>
+        <a href="/shop" class="btn-funnel">🎨 Jetzt personalisieren</a>
+        <a href="/shop" class="btn-funnel">✨ Second-Chance-Brownies entdecken</a>
+    </section>
+
+    <footer>
+        &copy; 2025 The Fäncy Brownie Co. | Eine Tradition, vier Generationen Geschmack.
+    </footer>
+
+</body>
+</html>
