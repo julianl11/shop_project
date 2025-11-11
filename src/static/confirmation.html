@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Bestätigung | The Fäncy Brownie Co.</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+            body {
+                font-family: 'Lato', sans-serif;
+                background-color: #f7f3e8;
+                color: #3e2723;
+                margin: 0;
+                padding: 100px 20px;
+                text-align: center;
+            }
+            .confirmation-box {
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                background: #fff;
+                padding: 50px;
+                border-radius: 12px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+                border-top: 5px solid #5d4037;
+            }
+            h1 {
+                font-family: 'Playfair Display', serif;
+                color: #5d4037;
+                font-size: 2.5em;
+            }
+            p { font-size: 1.1em; color: #4e342e; margin-bottom: 25px; }
+            a { color: #8d6e63; text-decoration: none; font-weight: bold; }
+            a:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <div class="confirmation-box">
+            <h1>🎉 Bestellung erfolgreich!</h1>
+            <p>Ihr fänciges Brownie-Meisterwerk ist in Arbeit.</p>
+            <p>{{ order_text|safe }}</p>
+            <p>Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
+            <p><a href="/welcome">Zurück zur Startseite</a></p>
+        </div>
+    </body>
+    </html>

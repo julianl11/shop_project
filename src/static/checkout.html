@@ -1,0 +1,160 @@
+ <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Checkout | The Fäncy Brownie Co.</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+            
+            body {
+                font-family: 'Lato', sans-serif;
+                background-color: #f7f3e8;
+                color: #3e2723;
+                margin: 0;
+                padding: 40px 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .checkout-container {
+                display: flex;
+                width: 100%;
+                max-width: 1000px;
+                gap: 40px;
+            }
+            header { margin-bottom: 40px; text-align: center; }
+            h1 { font-family: 'Playfair Display', serif; color: #5d4037; }
+
+            .form-section {
+                flex: 4;
+                background: #fff;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .summary-section {
+                flex: 3;
+                background: #efebe9; /* Hellbraun/Creme für die Box */
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                height: fit-content;
+                position: sticky;
+                top: 40px;
+            }
+            .summary-section h3 {
+                font-family: 'Playfair Display', serif;
+                color: #4e342e;
+                border-bottom: 2px solid #bcaaa4;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            .summary-item { font-size: 0.95em; display: flex; justify-content: space-between; margin: 5px 0; }
+            .summary-item .qty { font-weight: bold; color: #5d4037; margin-right: 10px; }
+
+            .total-line {
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                padding-top: 10px;
+                border-top: 1px solid #bcaaa4;
+                margin-top: 15px;
+                font-size: 1.2em;
+            }
+
+            /* Formular-Stile */
+            .form-group label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #5d4037; }
+            .form-group input, .form-group select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #bcaaa4;
+                border-radius: 4px;
+                box-sizing: border-box;
+                background-color: #f7f3e8;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+                background-color: #5d4037;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 1.2em;
+                font-weight: 700;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                margin-top: 30px; 
+            }
+            input[type="submit"]:hover { background-color: #4e342e; }
+
+            @media (max-width: 1000px) {
+                .checkout-container { flex-direction: column; }
+                .summary-section { position: static; order: -1; }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Zur Kasse</h1>
+            <p class="tagline">Bitte überprüfen Sie Ihre Bestellung und geben Sie Ihre Daten ein.</p>
+        </header>
+
+        <div class="checkout-container">
+            
+            <div class="form-section">
+                <h2>Ihre Versandinformationen</h2>
+                <form method="POST" action="/checkout">
+                    <div class="form-group">
+                        <label for="name">Vollständiger Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-Mail-Adresse:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Straße und Hausnummer:</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip">PLZ / Ort:</label>
+                        <input type="text" id="zip" name="zip" required>
+                    </div>
+                    
+                    <h2>Zahlungsmethode</h2>
+                    <div class="form-group">
+                        <label for="payment">Methode wählen:</label>
+                        <select id="payment" name="payment_method" required>
+                            <option value="card">Kreditkarte (Visa/Mastercard)</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="transfer">Vorkasse (Überweisung)</option>
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Kostenpflichtig bestellen ({{ totals['grand_total'] | safe }} €)">
+                </form>
+            </div>
+
+            <div class="summary-section">
+                <h3>Bestellübersicht</h3>
+                <div class="summary-items-list">
+                    {{summary_html | safe}}
+                </div>
+                
+                <div class="totals-breakdown" style="margin-top: 20px;">
+                    <p>Zwischensumme: <span>{{totals['subtotal'] | safe }} €</span></p>
+                    <p>Versandkosten: <span>{{totals['shipping'] | safe }} €</span></p>
+                    <p>Geschätzte MwSt (19%): <span>{{totals['tax'] | safe }} €</span></p>
+                </div>
+
+                <div class="total-line">
+                    <span>Gesamtbetrag</span>
+                    <span>{{ totals['grand_total'] | safe }} €</span>
+                </div>
+            </div>
+
+        </div>
+    </body>
+    </html>

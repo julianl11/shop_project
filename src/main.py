@@ -13,7 +13,7 @@ import uvicorn
 from typing import Optional, List, Dict
 from fastapi import Form, status
 from fastapi.responses import RedirectResponse
-from functions import calculate_totals, create_brownie_item
+from functions import calculate_totals, create_brownie_item, format_currency
 from edges import prewitt_edge_detection # Importiert Ihre Kantenerkennungslogik
 
 SECRET_KEY = "key"
@@ -38,7 +38,6 @@ app.add_middleware(
     session_cookie="fancy_brownie_session",
     max_age=3600,
 )
-
 
 # 3. API-Endpunkt für das Haupt-Frontend
 @app.get("/welcome", response_class=HTMLResponse)
@@ -117,7 +116,6 @@ async def view_cart(request: Request):
         return RedirectResponse(url="/shop", status_code=303) 
         
     totals = calculate_totals(cart_items)
-    grand_total_str = f"{totals['grand_total']:.2f}"
     
     # ... (HTML-Generierung wie zuvor) ...
     # Da der HTML-Code sehr lang ist, wird hier nur die relevante Weiterleitung beibehalten.
@@ -176,227 +174,12 @@ async def view_cart(request: Request):
                 </form>
             </div>
             """
+    totals['subtotal'] = format_currency(totals['subtotal'])
+    totals['shipping'] = format_currency(totals['shipping'])
+    totals['tax'] = format_currency(totals['tax'])
+    grand_total_str = format_currency(totals['grand_total'])
 
-    # HIER IST DIE HTML-GENERIERUNG FÜR DEN WARENKORB (Code aus vorheriger Antwort)
-    cart_html_template = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Ihr Warenkorb | The Fäncy Brownie Co.</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
-            body {{
-                font-family: 'Lato', sans-serif;
-                background-color: #f7f3e8;
-                color: #3e2723;
-                margin: 0;
-                padding: 40px 20px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }}
-            header {{ margin-bottom: 40px; text-align: center; }}
-            h1 {{
-                font-family: 'Playfair Display', serif;
-                font-size: 3em;
-                color: #5d4037;
-                letter-spacing: 2px;
-                margin-bottom: 5px;
-            }}
-            .tagline {{ font-style: italic; color: #8d6e63; margin-top: 0; font-size: 1.1em; }}
-            .cart-summary {{
-                width: 100%;
-                max-width: 800px;
-                background: #fff;
-                padding: 30px 40px;
-                border-radius: 12px;
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-                text-align: left;
-            }}
-            h2 {{
-                font-family: 'Playfair Display', serif;
-                color: #4e342e;
-                border-bottom: 2px solid #efebe9;
-                padding-bottom: 10px;
-                margin-top: 0;
-                margin-bottom: 20px;
-            }}
-            .cart-item {{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px 0;
-                border-bottom: 1px dashed #efebe9;
-            }}
-            .cart-item:last-of-type {{ border-bottom: none; }}
-            .item-details {{ flex-grow: 1; }}
-            .item-details h4 {{ margin: 0 0 5px 0; color: #5d4037; font-size: 1.1em; }}
-            .item-details .description {{ font-size: 0.9em; color: #8d6e63; margin: 0; }}
-            .item-details .quantity {{ font-size: 0.9em; color: #3e2723; margin: 5px 0 0; font-weight: bold; }}
-            .item-price {{ font-size: 1.3em; color: #4e342e; }}
-            .second-chance {{ background-color: #fcf8f0; padding: 10px; margin: 5px 0; border-radius: 4px; border-left: 3px solid #bcaaa4; }}
-            .second-chance-title {{ color: #7a5a4c !important; font-size: 1em !important; font-weight: bold; }}
-            .totals {{
-                margin-top: 30px;
-                padding-top: 20px;
-                border-top: 2px solid #5d4037;
-                text-align: right;
-            }}
-            .totals p {{ margin: 5px 0; font-size: 1.1em; }}
-            .totals strong {{ font-size: 1.5em; color: #4e342e; }}
-            .actions {{
-                display: flex;
-                justify-content: space-between;
-                margin-top: 30px;
-            }}
-            .btn {{
-                padding: 12px 25px;
-                border-radius: 6px;
-                text-decoration: none;
-                font-weight: 700;
-                transition: background-color 0.3s;
-                font-size: 1em;
-            }}
-            .btn-back {{
-                background-color: #bcaaa4;
-                color: white;
-            }}
-            .btn-back:hover {{ background-color: #8d6e63; }}
-            .btn-checkout {{
-                background-color: #5d4037;
-                color: white;
-            }}
-            .btn-checkout:hover {{ background-color: #4e342e; }}
-            .empty-cart {{ 
-                text-align: center; 
-                padding: 40px; 
-                font-size: 1.2em; 
-                color: #8d6e63; 
-            }}
-            @media (max-width: 600px) {{
-                .cart-summary {{ padding: 20px; }}
-                .actions {{ flex-direction: column; gap: 15px; }}
-                .btn {{ width: 100%; text-align: center; }}
-            }}
-
-            .cart-item {{
-                /* Muss Platz für die neuen Buttons schaffen */
-                gap: 15px; 
-            }}
-
-            .quantity-form {{
-                display: flex;
-                align-items: center;
-                margin-right: 20px;
-                width: 110px; /* Feste Breite für das Input-Feld */
-            }}
-
-            .qty-input {{
-                width: 50px;
-                padding: 6px;
-                border: 1px solid #bcaaa4;
-                border-radius: 4px 0 0 4px; /* Linke Seite rund */
-                text-align: center;
-                box-sizing: border-box;
-                font-size: 1em;
-            }}
-            
-            .btn-update {{
-                background-color: #8d6e63; /* Kupferbraun */
-                color: white;
-                border: none;
-                padding: 6px 10px;
-                font-size: 1em;
-                cursor: pointer;
-                border-radius: 0 4px 4px 0; /* Rechte Seite rund */
-                transition: background-color 0.3s;
-                height: 33px; /* Angleichen an Input-Höhe */
-            }}
-            
-            .btn-update:hover {{
-                background-color: #7a5a4c;
-            }}
-
-            .remove-form {{
-                margin-left: 20px; /* Abstand zum Preis */
-            }}
-
-            .btn-remove {{
-                background-color: #e57373; /* Sanftes Rot */
-                color: white;
-                border: none;
-                padding: 6px 10px;
-                font-size: 1.2em;
-                cursor: pointer;
-                border-radius: 4px;
-                transition: background-color 0.3s;
-                line-height: 1;
-                height: 33px; 
-            }}
-
-            .btn-remove:hover {{
-                background-color: #d32f2f; /* Dunkleres Rot */
-            }}
-
-            .item-price {{
-                /* Sicherstellen, dass der Preis rechts neben dem Update-Formular steht */
-                flex-shrink: 0;
-            }}
-
-            .second-chance .quantity-form {{
-                /* Second-Chance Artikel können hier nicht bearbeitet werden */
-                display: none; 
-            }}
-
-            /* Responsive Anpassung für Mobilgeräte */
-            @media (max-width: 600px) {{
-                .cart-item {{
-                    flex-wrap: wrap;
-                    justify-content: flex-start;
-                }}
-                .quantity-form, .remove-form {{
-                    margin-top: 10px;
-                    order: 3; /* Unten positionieren */
-                }}
-                .item-price {{
-                    order: 2;
-                    margin-left: auto; /* Preis rechts bündig */
-                }}
-            }}
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>Ihr Warenkorb</h1>
-            <p class="tagline">Ein Schritt entfernt von Ihrem fäncigen Brownie-Glück.</p>
-        </header>
-
-        <div class="cart-summary">
-            <h2>Ihre Artikel ({len(cart_items)})</h2>
-            
-            <div class="item-list">
-                {items_html}
-            </div>
-            
-            <div class="totals">
-                <p>Zwischensumme: {totals['subtotal']:.2f} €</p>
-                <p>Versandkosten: {totals['shipping']:.2f} €</p>
-                <p>Geschätzte MwSt (19%): {totals['tax']:.2f} €</p>
-                <h3>Gesamtsumme: <strong>{grand_total_str} €</strong></h3>
-            </div>
-            
-            <div class="actions">
-                <a href="/shop" class="btn btn-back">← Weiter bestellen</a>
-                <a href="/checkout" class="btn btn-checkout">Zur Kasse gehen</a>
-            </div>
-        </div>
-        
-    </body>
-    </html>
-    """
-    
-    return HTMLResponse(content=cart_html_template)
+    return templates.TemplateResponse("cart.html", {"request": request, "items_html": items_html, "totals": totals, "grand_total_str": grand_total_str, "cart_items": cart_items, "len_cart_items": len([item for item in cart_items for _ in range(item['quantity'] + item.get('second_chance_qty', 0))])})
 
 
 @app.post("/cart/update/{item_id}")
@@ -419,9 +202,13 @@ async def update_cart_item(request: Request, item_id: str, new_quantity: int = F
             # da sie nicht direkt über dieses Formular bearbeitet werden sollte.
             # Alternativ könnten Sie separate Update-Formulare erstellen, aber hier vereinfachen wir.
             item["quantity"] = new_quantity
+            base_price = item.get("base_price", 0.0)
+            item["total_personalized_price"] = base_price * new_quantity
+            item["total_second_chance_price"] = base_price * 0.75 * item.get("second_chance_qty", 0)
+
             
             # Falls die Menge auf 0 gesetzt wird, entfernen wir den Artikel
-            if new_quantity == 0 and item["second_chance_qty"] == 0:
+            if new_quantity == 0 and item.get("second_chance_qty", 0) == 0:
                 cart_items.remove(item)
                 break 
 
@@ -434,6 +221,8 @@ async def update_cart_item(request: Request, item_id: str, new_quantity: int = F
     request.session["cart"] = cart_items
     
     # Zurück zur Warenkorb-Ansicht leiten
+
+
     return RedirectResponse(url="/cart", status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -532,7 +321,6 @@ async def checkout_page(request: Request):
         return RedirectResponse(url="/shop", status_code=303)
 
     totals = calculate_totals(cart_items)
-    
     # Vereinfachte Zusammenfassung für die Checkout-Seite
     summary_html = ""
     for item in cart_items:
@@ -546,170 +334,12 @@ async def checkout_page(request: Request):
             </p>
         """
 
-    # Checkout HTML Template
-    checkout_html_template = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Checkout | The Fäncy Brownie Co.</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
-            
-            body {{
-                font-family: 'Lato', sans-serif;
-                background-color: #f7f3e8;
-                color: #3e2723;
-                margin: 0;
-                padding: 40px 20px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }}
-            .checkout-container {{
-                display: flex;
-                width: 100%;
-                max-width: 1000px;
-                gap: 40px;
-            }}
-            header {{ margin-bottom: 40px; text-align: center; }}
-            h1 {{ font-family: 'Playfair Display', serif; color: #5d4037; }}
+    totals['subtotal'] = format_currency(totals['subtotal'])
+    totals['shipping'] = format_currency(totals['shipping'])
+    totals['tax'] = format_currency(totals['tax'])
+    totals['grand_total'] = format_currency(totals['grand_total'])
 
-            .form-section {{
-                flex: 2;
-                background: #fff;
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            }}
-
-            .summary-section {{
-                flex: 1;
-                background: #efebe9; /* Hellbraun/Creme für die Box */
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-                height: fit-content;
-                position: sticky;
-                top: 40px;
-            }}
-            .summary-section h3 {{
-                font-family: 'Playfair Display', serif;
-                color: #4e342e;
-                border-bottom: 2px solid #bcaaa4;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }}
-            .summary-item {{ font-size: 0.95em; display: flex; justify-content: space-between; margin: 5px 0; }}
-            .summary-item .qty {{ font-weight: bold; color: #5d4037; margin-right: 10px; }}
-
-            .total-line {{
-                display: flex;
-                justify-content: space-between;
-                font-weight: bold;
-                padding-top: 10px;
-                border-top: 1px solid #bcaaa4;
-                margin-top: 15px;
-                font-size: 1.2em;
-            }}
-
-            /* Formular-Stile */
-            .form-group label {{ display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #5d4037; }}
-            .form-group input, .form-group select {{
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #bcaaa4;
-                border-radius: 4px;
-                box-sizing: border-box;
-                background-color: #f7f3e8;
-            }}
-
-            input[type="submit"] {{
-                width: 100%;
-                background-color: #5d4037;
-                color: white;
-                border: none;
-                padding: 15px 30px;
-                font-size: 1.2em;
-                font-weight: 700;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                margin-top: 30px; 
-            }}
-            input[type="submit"]:hover {{ background-color: #4e342e; }}
-
-            @media (max-width: 800px) {{
-                .checkout-container {{ flex-direction: column; }}
-                .summary-section {{ position: static; order: -1; }}
-            }}
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>Zur Kasse</h1>
-            <p class="tagline">Bitte überprüfen Sie Ihre Bestellung und geben Sie Ihre Daten ein.</p>
-        </header>
-
-        <div class="checkout-container">
-            
-            <div class="form-section">
-                <h2>Ihre Versandinformationen</h2>
-                <form method="POST" action="/checkout">
-                    <div class="form-group">
-                        <label for="name">Vollständiger Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">E-Mail-Adresse:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Straße und Hausnummer:</label>
-                        <input type="text" id="address" name="address" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="zip">PLZ / Ort:</label>
-                        <input type="text" id="zip" name="zip" required>
-                    </div>
-                    
-                    <h2>Zahlungsmethode</h2>
-                    <div class="form-group">
-                        <label for="payment">Methode wählen:</label>
-                        <select id="payment" name="payment_method" required>
-                            <option value="card">Kreditkarte (Visa/Mastercard)</option>
-                            <option value="paypal">PayPal</option>
-                            <option value="transfer">Vorkasse (Überweisung)</option>
-                        </select>
-                    </div>
-
-                    <input type="submit" value="Kostenpflichtig bestellen ({totals['grand_total']:.2f} €)">
-                </form>
-            </div>
-
-            <div class="summary-section">
-                <h3>Bestellübersicht</h3>
-                <div class="summary-items-list">
-                    {summary_html}
-                </div>
-                
-                <div class="totals-breakdown" style="margin-top: 20px;">
-                    <p>Zwischensumme: <span>{totals['subtotal']:.2f} €</span></p>
-                    <p>Versandkosten: <span>{totals['shipping']:.2f} €</span></p>
-                    <p>Geschätzte MwSt (19%): <span>{totals['tax']:.2f} €</span></p>
-                </div>
-
-                <div class="total-line">
-                    <span>Gesamtbetrag</span>
-                    <span>{totals['grand_total']:.2f} €</span>
-                </div>
-            </div>
-
-        </div>
-    </body>
-    </html>
-    """
-    return HTMLResponse(content=checkout_html_template)
+    return templates.TemplateResponse("checkout.html", {"request": request, "summary_html": summary_html, "totals": totals})
 
 
 # ---------------------------------------------------------------------
@@ -774,58 +404,7 @@ async def confirmation_page(request: Request, order_id: Optional[str] = None):
     
     order_text = f"Ihre Bestellnummer lautet: <strong>{order_id}</strong>." if order_id else "Vielen Dank für Ihre Bestellung!"
 
-    confirmation_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Bestätigung | The Fäncy Brownie Co.</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
-            body {{
-                font-family: 'Lato', sans-serif;
-                background-color: #f7f3e8;
-                color: #3e2723;
-                margin: 0;
-                padding: 100px 20px;
-                text-align: center;
-            }}
-            .confirmation-box {{
-                width: 100%;
-                max-width: 600px;
-                margin: 0 auto;
-                background: #fff;
-                padding: 50px;
-                border-radius: 12px;
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-                border-top: 5px solid #5d4037;
-            }}
-            h1 {{
-                font-family: 'Playfair Display', serif;
-                color: #5d4037;
-                font-size: 2.5em;
-            }}
-            p {{ font-size: 1.1em; color: #4e342e; margin-bottom: 25px; }}
-            a {{ color: #8d6e63; text-decoration: none; font-weight: bold; }}
-            a:hover {{ text-decoration: underline; }}
-        </style>
-    </head>
-    <body>
-        <div class="confirmation-box">
-            <h1>🎉 Bestellung erfolgreich!</h1>
-            <p>Ihr fänciges Brownie-Meisterwerk ist in Arbeit.</p>
-            <p>{order_text}</p>
-            <p>Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
-            <p><a href="/welcome">Zurück zur Startseite</a></p>
-        </div>
-    </body>
-    </html>
-    """
-    return HTMLResponse(content=confirmation_html)
-
-
-
-
+    return templates.TemplateResponse("confirmation.html", {"request": request, "order_text": order_text})
 
 
 if __name__ == "__main__":
