@@ -13,7 +13,7 @@ import uvicorn
 from typing import Optional, List, Dict
 from fastapi import Form, status
 from fastapi.responses import RedirectResponse
-from functions import calculate_totals, create_brownie_item, format_currency
+from functions import calculate_totals, format_currency
 from edges import prewitt_edge_detection # Importiert Ihre Kantenerkennungslogik
 
 SECRET_KEY = "key"
@@ -41,13 +41,13 @@ app.add_middleware(
 
 # 3. API-Endpunkt für das Haupt-Frontend
 @app.get("/welcome", response_class=HTMLResponse)
-async def main(request: Request):
+async def welcome(request: Request):
     return templates.TemplateResponse("welcome.html", {"request": request})
 
 
 # 3. API-Endpunkt für das Haupt-Frontend
 @app.get("/shop", response_class=HTMLResponse)
-async def main(request: Request):
+async def shop(request: Request):
     return templates.TemplateResponse("shop.html", {"request": request})
 
 # 4. API-Endpunkt für den Upload und die Verarbeitung
@@ -70,41 +70,7 @@ async def process_image(request: Request, file: UploadFile = File(...)):
     # 4. Bild-Bytes als StreamingResponse zurückgeben
     return JSONResponse(content={"processed_image_src": image_src})
 
-@app.post("/add_to_cart")
-async def add_to_cart(
-    request: Request,
-    size: str = Form(...),
-    shape: str = Form(...),
-    filling: str = Form(None),
-    toppings: str = Form(None),
-    quantity: int = Form(...),
-    # Achtung: Das Bild-Upload-Feld ('image') wird hier nicht direkt verarbeitet,
-    # da es bereits in Ihrem JS-Code separat an /upload gesendet wird.
-    # Hier speichern wir nur die Konfigurationsdaten.
-    # Wir nehmen an, dass 'old-brownies-qty' im Submit mitkommt (auch wenn es außerhalb des Haupt-Forms ist)
-    old_brownies_qty: Optional[int] = Form(0, alias="old_brownies_qty") 
-):
-    if "cart" not in request.session:
-        request.session["cart"] = []
 
-    # Erstelle den neuen Brownie-Artikel
-    new_item = create_brownie_item(
-        size=size,
-        shape=shape,
-        filling=filling,
-        toppings=toppings,
-        quantity=quantity,
-        old_brownies_qty=old_brownies_qty if old_brownies_qty else 0 # 0, falls None/null von Form kommt
-    )
-    
-    # Füge den Artikel zum Warenkorb hinzu
-    request.session["cart"].append(new_item)
-
-    print(f"Artikel zum Warenkorb hinzugefügt. Aktuelle Warenkorbgröße: {len(request.session['cart'])}")
-    
-    # 4. Weiterleitung
-    # Leite den Benutzer auf die Warenkorb-Seite um (GET /cart)
-    return RedirectResponse(url="/cart", status_code=303)
 
 @app.get("/cart", response_class=HTMLResponse)
 async def view_cart(request: Request):
@@ -302,12 +268,6 @@ async def add_to_cart(
         return RedirectResponse(url="/cart", status_code=303)
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Ungültige Bestelldaten: {e}")
-
- 
-
-    except Exception as e:
-        # Fehlerbehandlung, falls Pydantic-Validierung fehlschlägt (z.B. quantity < 1)
         raise HTTPException(status_code=400, detail=f"Ungültige Bestelldaten: {e}")
 
 

@@ -3,29 +3,6 @@ from models import SHIPPING_COST, TAX_RATE
 #from main import app
 
 
-def create_brownie_item(
-    size: str, 
-    shape: str, 
-    filling: str, 
-    toppings: str, 
-    quantity: int,
-    old_brownies_qty: int = 0
-) -> Dict:
-    """Erstellt ein Brownie-Objekt für den Warenkorb."""
-    return {
-        "id": f"item-{len(app.state.cart.get('items', [])) + 1}", # Einfache, temporäre ID
-        "name": "Personalisierter Brownie",
-        "size": size,
-        "shape": shape,
-        "filling": filling,
-        "toppings": toppings,
-        "quantity": quantity,
-        "price": 5.90, # Beispielpreis
-        "total_price": round(5.90 * quantity, 2),
-        "second_chance_qty": old_brownies_qty # Hinzufügen der Second-Chance-Option
-    }
-
-
 def calculate_totals(cart_items: List[Dict]) -> Dict:
     """Berechnet die Gesamtsummen des Warenkorbs (Zwischensumme, Versand, MwSt.)."""
     subtotal = 0.0
