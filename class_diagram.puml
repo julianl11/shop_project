@@ -1,0 +1,43 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Kunde {
+  + Kunden_ID : int
+  + Name : string
+  + Adresse : string
+  + EMail : string
+}
+
+class Bestellung {
+  + Bestell_ID : int
+  + Kunden_ID : int
+  + Gesamtsumme : float
+  + Bestelldatum : date
+  + Status : string
+}
+
+class Produkt {
+  + Produkt_ID : int
+  + Name : string
+  + Beschreibung : string
+  + Basispreis : float
+}
+
+class Bestellposition {
+  + Bestellpos_ID : int
+  + Bestell_ID : int
+  + Produkt_ID : int
+  + Menge : int
+  + Second_Chance_Menge : int
+  + Größe : string
+  + Form : string
+  + Füllung : string
+  + Toppings : string
+  + Bild_Pfad : string
+}
+
+Kunde "1" -- "1..*" Bestellung : erstellt >
+Bestellung "1" -- "1..*" Bestellposition : enthält >
+Produkt "1" -- "1..*" Bestellposition : ist Teil von >
+@enduml
