@@ -1,160 +1,333 @@
- <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Checkout | The Fäncy Brownie Co.</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
-            
-            body {
-                font-family: 'Lato', sans-serif;
-                background-color: #f7f3e8;
-                color: #3e2723;
-                margin: 0;
-                padding: 40px 20px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .checkout-container {
-                display: flex;
-                width: 100%;
-                max-width: 1000px;
-                gap: 40px;
-            }
-            header { margin-bottom: 40px; text-align: center; }
-            h1 { font-family: 'Playfair Display', serif; color: #5d4037; }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout | The Fäncy Brownie Co.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap');
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f7f3e8;
+            color: #3e2723;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .checkout-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            gap: 40px;
+        }
+        header { margin-bottom: 40px; text-align: center; }
+        h1 { font-family: 'Playfair Display', serif; color: #5d4037; }
 
-            .form-section {
-                flex: 4;
-                background: #fff;
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            }
+        .form-section {
+            flex: 4;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-            .summary-section {
-                flex: 3;
-                background: #efebe9; /* Hellbraun/Creme für die Box */
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-                height: fit-content;
-                position: sticky;
-                top: 40px;
-            }
-            .summary-section h3 {
-                font-family: 'Playfair Display', serif;
-                color: #4e342e;
-                border-bottom: 2px solid #bcaaa4;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }
-            .summary-item { font-size: 0.95em; display: flex; justify-content: space-between; margin: 5px 0; }
-            .summary-item .qty { font-weight: bold; color: #5d4037; margin-right: 10px; }
+        .summary-section {
+            flex: 3;
+            background: #efebe9; /* Hellbraun/Creme für die Box */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+        }
+        .summary-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: #4e342e;
+            border-bottom: 2px solid #bcaaa4;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .summary-item { font-size: 0.95em; display: flex; justify-content: space-between; margin: 5px 0; }
+        .summary-item .qty { font-weight: bold; color: #5d4037; margin-right: 10px; }
 
-            .total-line {
-                display: flex;
-                justify-content: space-between;
-                font-weight: bold;
-                padding-top: 10px;
-                border-top: 1px solid #bcaaa4;
-                margin-top: 15px;
-                font-size: 1.2em;
-            }
+        /* STILE FÜR DATUMSWAHL (unverändert) */
+        .date-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .date-item {
+            padding: 15px 5px;
+            background-color: #f7f3e8; /* Hintergrund der Formulare */
+            border: 2px solid #bcaaa4;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+        .date-item span.weekday {
+            display: block;
+            font-size: 0.75em;
+            color: #8d6e63;
+        }
+        .date-item:hover {
+            background-color: #e5e3d7;
+            border-color: #5d4037;
+        }
+        .date-item.selected {
+            background-color: #5d4037;
+            color: white;
+            border-color: #3e2723;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .date-item.selected span.weekday {
+            color: #f7f3e8;
+        }
+        
+        /* Summary Confirmation Style */
+        #delivery-confirmation {
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 5px solid #5d4037;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        #confirmed-date-time {
+            margin: 5px 0 0; 
+            font-size: 1.1em; 
+            color: #3e2723;
+        }
 
-            /* Formular-Stile */
-            .form-group label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #5d4037; }
-            .form-group input, .form-group select {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #bcaaa4;
-                border-radius: 4px;
-                box-sizing: border-box;
-                background-color: #f7f3e8;
-            }
 
-            input[type="submit"] {
-                width: 100%;
-                background-color: #5d4037;
-                color: white;
-                border: none;
-                padding: 15px 30px;
-                font-size: 1.2em;
-                font-weight: 700;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                margin-top: 30px; 
-            }
-            input[type="submit"]:hover { background-color: #4e342e; }
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            padding-top: 10px;
+            border-top: 1px solid #bcaaa4;
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
 
-            @media (max-width: 1000px) {
-                .checkout-container { flex-direction: column; }
-                .summary-section { position: static; order: -1; }
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>Zur Kasse</h1>
-            <p class="tagline">Bitte überprüfen Sie Ihre Bestellung und geben Sie Ihre Daten ein.</p>
-        </header>
+        /* Formular-Stile */
+        .form-group label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #5d4037; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bcaaa4;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #f7f3e8;
+        }
 
-        <div class="checkout-container">
-            
-            <div class="form-section">
+        input[type="submit"] {
+            width: 100%;
+            background-color: #5d4037;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 30px; 
+        }
+        input[type="submit"]:hover { background-color: #4e342e; }
+
+        @media (max-width: 1000px) {
+            .checkout-container { flex-direction: column; }
+            .summary-section { position: static; order: -1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Zur Kasse</h1>
+        <p class="tagline">Bitte überprüfen Sie Ihre Bestellung und geben Sie Ihre Daten ein.</p>
+    </header>
+
+    <div class="checkout-container">
+        
+        <div class="form-section">
+            <form method="POST" action="/checkout">
+                
                 <h2>Ihre Versandinformationen</h2>
-                <form method="POST" action="/checkout">
-                    <div class="form-group">
-                        <label for="name">Vollständiger Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">E-Mail-Adresse:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Straße und Hausnummer:</label>
-                        <input type="text" id="address" name="address" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="zip">PLZ / Ort:</label>
-                        <input type="text" id="zip" name="zip" required>
-                    </div>
-                    
-                    <h2>Zahlungsmethode</h2>
-                    <div class="form-group">
-                        <label for="payment">Methode wählen:</label>
-                        <select id="payment" name="payment_method" required>
-                            <option value="card">Kreditkarte (Visa/Mastercard)</option>
-                            <option value="paypal">PayPal</option>
-                            <option value="transfer">Vorkasse (Überweisung)</option>
-                        </select>
-                    </div>
-
-                    <input type="submit" value="Kostenpflichtig bestellen ({{ totals['grand_total'] | safe }} €)">
-                </form>
-            </div>
-
-            <div class="summary-section">
-                <h3>Bestellübersicht</h3>
-                <div class="summary-items-list">
-                    {{summary_html | safe}}
+                <div class="form-group">
+                    <label for="name">Vollständiger Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-Mail-Adresse:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Straße und Hausnummer:</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="zip">PLZ / Ort:</label>
+                    <input type="text" id="zip" name="zip" required>
                 </div>
                 
-                <div class="totals-breakdown" style="margin-top: 20px;">
-                    <p>Zwischensumme: <span>{{totals['subtotal'] | safe }} €</span></p>
-                    <p>Versandkosten: <span>{{totals['shipping'] | safe }} €</span></p>
-                    <p>Geschätzte MwSt (19%): <span>{{totals['tax'] | safe }} €</span></p>
+                <!-- TERMINAUSWAHL: NUR DATUM -->
+                <h2>Wunschtermin: Backtage (Mo & Do)</h2>
+                <div id="delivery-selection-wrapper">
+                    <div class="form-group">
+                        <label>Backtag auswählen (Die nächsten verfügbaren Backtage):</label>
+                        <div id="date-picker" class="date-picker">
+                            <!-- Datumselemente werden hier von JavaScript eingefügt -->
+                        </div>
+                        <!-- Verstecktes Feld, um die Auswahl mit dem Formular zu senden -->
+                        <input type="hidden" id="delivery-date-input" name="delivery_date" required>
+                    </div>
+                    
+                    <!-- ZEITFENSTER-AUSWAHL WURDE HIER ENTFERNT -->
                 </div>
 
-                <div class="total-line">
-                    <span>Gesamtbetrag</span>
-                    <span>{{ totals['grand_total'] | safe }} €</span>
+                
+                <h2>Zahlungsmethode</h2>
+                <div class="form-group">
+                    <label for="payment">Methode wählen:</label>
+                    <select id="payment" name="payment_method" required>
+                        <option value="card">Kreditkarte (Visa/Mastercard)</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="transfer">Vorkasse (Überweisung)</option>
+                    </select>
                 </div>
+
+                <input type="submit" value="Kostenpflichtig bestellen ({{ totals['grand_total'] | safe }} €)">
+            </form>
+        </div>
+
+        <div class="summary-section">
+            <h3>Bestellübersicht</h3>
+            <div class="summary-items-list">
+                {{summary_html | safe}}
+            </div>
+            
+            <!-- GEWÄHLTER TERMIN IN DER ÜBERSICHT -->
+            <div id="delivery-confirmation" style="display: none;">
+                <p style="margin: 0; color: #5d4037; font-weight: 700;">Gewählter Backtag:</p>
+                <p id="confirmed-date-time" style="margin: 5px 0 0; font-size: 1.1em;"></p>
             </div>
 
+            <div class="totals-breakdown" style="margin-top: 20px;">
+                <p>Zwischensumme: <span>{{totals['subtotal'] | safe }} €</span></p>
+                <p>Versandkosten: <span>{{totals['shipping'] | safe }} €</span></p>
+                <p>Geschätzte MwSt (19%): <span>{{totals['tax'] | safe }} €</span></p>
+            </div>
+
+            <div class="total-line">
+                <span>Gesamtbetrag</span>
+                <span>{{ totals['grand_total'] | safe }} €</span>
+            </div>
         </div>
-    </body>
-    </html>
+
+    </div>
+
+    <script>
+        const DATE_PICKER = document.getElementById('date-picker');
+        const DELIVERY_CONFIRMATION = document.getElementById('delivery-confirmation');
+        const CONFIRMED_DATE_TIME = document.getElementById('confirmed-date-time');
+        const DELIVERY_DATE_INPUT = document.getElementById('delivery-date-input');
+
+        const WEEKDAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+        const MONTHS = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+
+        let selectedDate = null;
+        
+        // Festgelegte Backtage: Montag (1) und Donnerstag (4) 
+        const BAKING_DAYS = [1, 4]; 
+        
+        /**
+         * Erzeugt die nächsten 7 verfügbaren Backtage (Mo und Do).
+         */
+        function getNextSevenBakingDays() {
+            const days = [];
+            let date = new Date();
+            // Startet ab dem nächsten Tag
+            date.setDate(date.getDate() + 1); 
+
+            // Suche maximal 14 Tage in die Zukunft, um sicherzustellen, dass wir 7 Backtage finden
+            for (let i = 0; i < 14 && days.length < 7; i++) {
+                const dayOfWeek = date.getDay(); // 0 = Sonntag, 1 = Montag, ..., 6 = Samstag
+
+                // Prüfe, ob der Tag in unserer Liste der Backtage enthalten ist
+                if (BAKING_DAYS.includes(dayOfWeek)) {
+                    // Füge eine Kopie des Datums hinzu
+                    days.push(new Date(date)); 
+                }
+
+                // Gehe zum nächsten Tag
+                date.setDate(date.getDate() + 1);
+            }
+            return days;
+        }
+
+        /**
+         * Rendert die Datums-Auswahl im Grid
+         */
+        function renderDateSelection() {
+            const dates = getNextSevenBakingDays();
+            DATE_PICKER.innerHTML = ''; 
+
+            dates.forEach(date => {
+                const dayName = WEEKDAYS[date.getDay()];
+                const dayOfMonth = date.getDate();
+                const monthName = MONTHS[date.getMonth()];
+                // Format: TT.MM.JJJJ (z.B. 24.11.2025) für die Übergabe im Formular
+                const fullDateString = `${dayOfMonth}.${date.getMonth() + 1}.${date.getFullYear()}`;
+
+                const dateItem = document.createElement('div');
+                dateItem.classList.add('date-item');
+                dateItem.dataset.date = fullDateString;
+                dateItem.innerHTML = `<span class="weekday">${dayName}</span>${dayOfMonth}. ${monthName}`;
+                
+                dateItem.addEventListener('click', () => {
+                    // Alle Deselektieren
+                    document.querySelectorAll('.date-item').forEach(item => item.classList.remove('selected'));
+                    // Dieses Element Selektieren
+                    dateItem.classList.add('selected');
+                    selectedDate = fullDateString;
+                    DELIVERY_DATE_INPUT.value = selectedDate;
+                    updateSummary();
+                });
+
+                DATE_PICKER.appendChild(dateItem);
+            });
+            
+            // Fehlermeldung, falls keine Backtage gefunden wurden
+            if (dates.length === 0) {
+                DATE_PICKER.innerHTML = '<p style="color: red; font-style: italic;">Aktuell keine Backtage verfügbar.</p>';
+            }
+        }
+
+        /**
+         * Aktualisiert die Anzeige in der Bestellübersicht
+         */
+        function updateSummary() {
+            // Nur das Datum prüfen
+            if (selectedDate) { 
+                CONFIRMED_DATE_TIME.textContent = selectedDate;
+                DELIVERY_CONFIRMATION.style.display = 'block';
+            } else {
+                DELIVERY_CONFIRMATION.style.display = 'none';
+            }
+        }
+
+        // Initialisierung beim Laden der Seite
+        window.onload = () => {
+            renderDateSelection();
+        };
+
+    </script>
+</body>
+</html>
