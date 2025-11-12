@@ -1,9 +1,13 @@
+import asyncio
 import time
-from fastapi import FastAPI, File, UploadFile, Request
+from contextlib import asynccontextmanager
+from fastapi import Depends, FastAPI, File, UploadFile, Request
+
 from fastapi.responses import HTMLResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import select
 from starlette.middleware.sessions import SessionMiddleware
 from models import BrownieItem
 from fastapi import HTTPException
@@ -14,15 +18,91 @@ from typing import Optional, List, Dict
 from fastapi import Form, status
 from fastapi.responses import RedirectResponse
 from functions import calculate_totals, format_currency
-from edges import prewitt_edge_detection # Importiert Ihre Kantenerkennungslogik
+from database import init_db, AsyncSessionLocal, engine, reset_db, drop_db
+import schema
+from db_models import Base, Product, OrderItem
+from edges import prewitt_edge_detection 
+from sqlalchemy.ext.asyncio import AsyncSession
 
 SECRET_KEY = "key"
 
-app = FastAPI()
+# ----------------------------------------------------------------------
+# HILFSFUNKTION: Initiales Seeding
+# ----------------------------------------------------------------------
+
+async def seed_initial_data():
+    """Fügt einen initialen Produktdatensatz hinzu, um die Funktionalität zu prüfen."""
+    try:
+        async with AsyncSessionLocal() as db:
+            # Füge einen Test-Brownie hinzu
+            new_product = Product(
+                name="Der erste Brownie (Auto-Seed)",
+                description="Automatisch erstellter Testdatensatz nach DB-Reset.",
+                base_price=9.99
+            )
+            # Prüfe, ob das Produkt bereits existiert (optional, da wir reset_db nutzen)
+            # count_stmt = select(func.count()).select_from(Product) # Kommentar: func importen, wenn nötig
+            
+            db.add(new_product)
+            await db.commit()
+            await db.refresh(new_product)
+            print(f"✅ Initialer Seed-Datensatz für Product erfolgreich hinzugefügt (ID: {new_product.id}).")
+    except Exception as e:
+        print(f"❌ Fehler beim Seeding der initialen Daten: {e}")
+
+# ----------------------------------------------------------------------
+# 1. FastAPI-App-Initialisierung (Lifespan-Konfiguration)
+# ----------------------------------------------------------------------
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    FastAPI Lifespan Kontextmanager (ersetzt @app.on_event).
+    Startup-Code läuft vor dem Yield, Shutdown-Code danach.
+    """
+    # STARTUP-CODE: Datenbank-Initialisierung
+    print("Starte Datenbank-Initialisierung...")
+    await init_db()
+    print("Datenbank bereit.")
+
+    print("Starte Initiales Seeding der Daten...")
+    await seed_initial_data()
+    print("Initiales Seeding abgeschlossen.")
+    
+    # Der Yield-Befehl signalisiert, dass die Anwendung bereit ist, 
+    # Anfragen anzunehmen.
+    yield
+    
+    # SHUTDOWN-CODE (falls benötigt, z.B. zum Schließen von Engines)
+    # Hier nicht notwendig, da SQLAlchemy die Engine verwaltet.
+    pass
+
+# FastAPI-Initialisierung mit dem Lifespan-Manager
+app = FastAPI(
+    title="Brownie Shop API",
+    lifespan=lifespan # ÜBERGABE DES LIFESPAN MANAGERS
+)
+
+# ----------------------------------------------------------------------
+# 2. Dependency Injection: get_async_db
+# ----------------------------------------------------------------------
+
+async def get_async_db() -> AsyncSession:
+    """
+    Erstellt eine asynchrone Datenbank-Session, stellt sie dem Endpunkt bereit
+    und schließt sie nach Beendigung des Requests automatisch (try/finally).
+    """
+    db = AsyncSessionLocal()
+    try:
+        # Session an Endpunkt übergeben
+        yield db 
+    finally:
+        # Session nach Beendigung schließen
+        await db.close()
 
 # 1. Statische Dateien (für die HTML-Datei, falls nötig)
 app.mount("/data", StaticFiles(directory="data"), name="data")
-templates = Jinja2Templates(directory="/Users/julianlorenz/Documents/Fallstudie_website/shop_project/src/static/")
+templates = Jinja2Templates(directory="static/")
 
 app.add_middleware(
     CORSMiddleware,
@@ -365,6 +445,48 @@ async def confirmation_page(request: Request, order_id: Optional[str] = None):
     order_text = f"Ihre Bestellnummer lautet: <strong>{order_id}</strong>." if order_id else "Vielen Dank für Ihre Bestellung!"
 
     return templates.TemplateResponse("confirmation.html", {"request": request, "order_text": order_text})
+
+
+# ---------------------------------------------------------------------
+# 5. Produkte
+# ---------------------------------------------------------------------
+
+@app.get("/api/products", response_model=List[schema.Product])
+async def read_products(db: AsyncSession = Depends(get_async_db)):
+    """Ruft alle Brownie-Produkte aus der Datenbank ab."""
+    
+    # SQLAlchemy 2.0 Syntax: select-Statement erstellen
+    stmt = select(Product)
+    
+    # Ausführung des Statements über die asynchrone Session
+    result = await db.execute(stmt)
+    
+    # Ergebnisse als Liste von Model-Objekten abrufen
+    products = result.scalars().all()
+    
+    # Rückgabe (FastAPI/Pydantic serialisiert die Objekte automatisch)
+    return products
+
+@app.post("/api/products/seed", status_code=status.HTTP_201_CREATED)
+async def seed_products(db: AsyncSession = Depends(get_async_db)):
+    """Fügt ein Beispielprodukt zur Datenbank hinzu (Manueller Seeding-Endpunkt)."""
+    
+    new_product = Product(
+        name="Luxus Schoko-Trüffel Brownie",
+        description="Mit 70% Kakao und Fleur de Sel bestreut.",
+        base_price=5.90
+    )
+    
+    # Hinzufügen zum Session-Kontext
+    db.add(new_product)
+    
+    # Transaktion durchführen und persistieren
+    await db.commit()
+    
+    # Datenbankobjekt aktualisieren (optional), um PK zu erhalten
+    await db.refresh(new_product) 
+    
+    return {"message": "Produkt erfolgreich hinzugefügt", "id": new_product.id}
 
 
 if __name__ == "__main__":
