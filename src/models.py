@@ -25,6 +25,21 @@ class BrownieItem(BaseModel):
         """Berechnet den Gesamtpreis für die Second-Chance-Brownies (25% Rabatt)."""
         second_chance_price = self.base_price * 0.75 # 25% Rabatt
         return round(second_chance_price * self.second_chance_qty, 2)
+    
+    @property
+    def above_x(self) -> float:
+        """Berechnet den Gesamtpreis für Brownies über 5 Stück (10% Rabatt)."""
+        if self.quantity >= 10:
+            discount_price = self.base_price * 0.90 # 10% Rabatt
+            return round(discount_price * self.quantity, 2)
+
+        if self.quantity >= 5:
+            discount_price = self.base_price * 0.95 # 5% Rabatt
+            return round(discount_price * self.quantity, 2)
+        
+        else:
+            raise ValueError("Menge ist weniger als 5, kein Rabatt anwendbar.")
+
 
 SHIPPING_COST = 4.90
 TAX_RATE = 0.19 # 19% Mehrwertsteuer

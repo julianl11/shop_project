@@ -124,6 +124,80 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
         }
 
+         /* --- NEUE REVIEW Sektion --- */
+        .reviews-section {
+            padding: 0px 10%;
+            background-color: #ffffff; /* Leicht abgesetzter Hintergrund */
+            max-width: max-content;
+            margin: 0 auto;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 60px;
+        }
+
+        .reviews-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .review-card {
+            background-color: var(--color-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            border-left: 5px solid var(--color-secondary); /* Eleganter Akzent */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-card-header {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .review-card-header strong {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-top: 5px;
+        }
+
+        .review-stars {
+            color: #ffc107; /* Goldfarbe für die Sterne */
+            font-size: 1.4em;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        
+        .review-stars span {
+            /* Unicode Stern: ★ */
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-comment {
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
         /* --- Footer (Minimalistisch) --- */
         footer {
             padding: 20px;
@@ -181,8 +255,59 @@
         <a href="/shop" class="btn-funnel">✨ Second-Chance-Brownies entdecken</a>
     </section>
 
+<!-- NEU: Kundenbewertungen Sektion -->
+    <section class="reviews-section">
+        <h2>Das sagen unsere Kunden</h2>
+        <div class="reviews-grid">
+            
+            <div class="review-card">
+                <div class="review-card-header">
+                    <div class="review-stars">
+                        <span>★★★★★</span>
+                    </div>
+                    <strong>Anna S.</strong>
+                </div>
+                <p class="review-comment">"Ich dachte, ich kenne Brownies! Aber diese sind eine andere Liga. Die Textur ist perfekt und die Schokolade schmeckt so intensiv. Die Personalisierung ist ein Highlight!"</p>
+            </div>
+            
+            <div class="review-card">
+                <div class="review-card-header">
+                    <div class="review-stars">
+                        <span>★★★★★</span>
+                    </div>
+                    <strong>Markus L.</strong>
+                </div>
+                <p class="review-comment">"Lieferung pünktlich zum gewünschten Tag und die Geschenke waren ein voller Erfolg. Die Möglichkeit, eigene Konturen zu wählen, ist genial. Eine klare Empfehlung!"</p>
+            </div>
+            
+            <div class="review-card">
+                <div class="review-card-header">
+                    <div class="review-stars">
+                        <span>★★★★★</span>
+                    </div>
+                    <strong>Elias H.</strong>
+                </div>
+                <p class="review-comment">"Der beste Online-Brownie, den ich je hatte. Man schmeckt die Qualität der Zutaten. Der Kundenservice war auch super freundlich. Fünf Sterne plus!"</p>
+            </div>
+
+        </div>
+    </section>
+    
+    <hr>
+
+    <section class="funnel-actions">
+        <p>Sind Sie bereit, ein Stück Geschichte zu probieren und es zu Ihrem eigenen zu machen?</p>
+        
+        <a href="/shop" class="btn-funnel">➡️ Brownie-Größe & Form wählen</a>
+        <a href="/shop" class="btn-funnel">🎨 Jetzt personalisieren</a>
+        <a href="/shop" class="btn-funnel">✨ Second-Chance-Brownies entdecken</a>
+    </section>
+
     <footer>
         &copy; 2025 The Fäncy Brownie Co. | Eine Tradition, vier Generationen Geschmack.
+        <br>
+        <a href="/impressum" class="footer-link">Impressum</a> | 
+        <a href="/datenschutz" class="footer-link">Datenschutz & Cookies</a>
     </footer>
 
 </body>

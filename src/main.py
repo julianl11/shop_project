@@ -87,7 +87,7 @@ app = FastAPI(
 # 2. Dependency Injection: get_async_db
 # ----------------------------------------------------------------------
 
-async def get_async_db() -> AsyncSession:
+async def get_async_db():
     """
     Erstellt eine asynchrone Datenbank-Session, stellt sie dem Endpunkt bereit
     und schließt sie nach Beendigung des Requests automatisch (try/finally).
@@ -124,6 +124,13 @@ app.add_middleware(
 async def welcome(request: Request):
     return templates.TemplateResponse("welcome.html", {"request": request})
 
+@app.get("/datenschutz", response_class=HTMLResponse)
+async def datenschutz(request: Request):
+    return templates.TemplateResponse("datenschutz.html", {"request": request})
+
+@app.get("/impressum", response_class=HTMLResponse)
+async def impressum(request: Request):
+    return templates.TemplateResponse("impressum.html", {"request": request})
 
 # 3. API-Endpunkt für das Haupt-Frontend
 @app.get("/shop", response_class=HTMLResponse)
@@ -160,7 +167,7 @@ async def view_cart(request: Request):
     if not cart_items:
         # Warenkorb leer? Zurück zur Bestellung leiten
         return RedirectResponse(url="/shop", status_code=303) 
-        
+
     totals = calculate_totals(cart_items)
     
     # ... (HTML-Generierung wie zuvor) ...
@@ -258,10 +265,7 @@ async def update_cart_item(request: Request, item_id: str, new_quantity: int = F
                 cart_items.remove(item)
                 break 
 
-            # Neu berechnen der Preise für diesen Artikel (vereinfacht)
-            # In einer echten Anwendung müssten Sie calculate_totals aufrufen, 
-            # um die Einzelpreise neu zu setzen. Hier verlassen wir uns auf die Neuberechnung
-            # in der calculate_totals-Funktion, die beim nächsten Aufruf von /cart oder /checkout erfolgt.
+
             break
 
     request.session["cart"] = cart_items
