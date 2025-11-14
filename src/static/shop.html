@@ -345,6 +345,24 @@
         .cart-link:hover, .checkout-link:hover {
             background-color: #7a5a4c; 
         }
+
+        .wednesday-banner {
+            background-color: #ffe0b2; /* Helles Orange/Apricot */
+            color: #e65100; /* Dunkles Orange */
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 2px solid #ffb74d;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .wednesday-banner strong {
+            font-size: 1.2em;
+            font-family: 'Playfair Display', serif;
+        }
         
         /* Responsiveness */
         @media (max-width: 900px) {
@@ -362,16 +380,16 @@
 </head>
 <body>
     <header>
-        <h1>The Fäncy Brownie Co.</h1>
-        <p class="tagline">Ein Biss sagt mehr als tausend Worte – Gestalten Sie Ihr Meisterwerk.</p>
-        
-        <!-- NEUER BUTTON ZUR STARTSEITE -->
-        <a href="/welcome" class="back-to-home">← Zurück zur Familienstory</a>
-    </header>
+            <h1>The Fäncy Brownie Co.</h1>
+            <p class="tagline">Ein Biss sagt mehr als tausend Worte – Gestalten Sie Ihr Meisterwerk.</p>
+            
+            <a href="/welcome" class="back-to-home">← Zurück zur Familienstory</a>
+        </header>
 
-    <p>Bitte öffnen Sie die Datei <strong>updated_order_form.html</strong> in Ihrem Browser, 
-               um das Bestellformular zu sehen und einen Artikel in den Warenkorb zu legen.</p>
-            <p>Nach dem Hinzufügen von Artikeln können Sie zu folgenden Seiten navigieren:</p>
+    <div id="wednesday-promo-banner" class="wednesday-banner hidden">
+            <strong>Mittwochs-Special!</strong> Bestellen Sie heute und erhalten Sie <em>10% Rabatt</em> auf alle Bestellungen über 30€ mit dem Code <strong>WEDNESDAY10</strong>! Nur gültig für Bestellungen, die mittwochs aufgegeben werden.
+    </div>
+
     <div class="order-container">
         
         <!-- Formular (Sequenziell) -->
@@ -545,6 +563,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // ---------------------------------------------------------------------
+    // NEU: MITTWOCHS-PROMO-LOGIK (Clientseitig)
+    // ---------------------------------------------------------------------
+    const wednesdayBanner = document.getElementById('wednesday-promo-banner');
+    const today = new Date();
+    // getDay() gibt 0 (Sonntag) bis 6 (Samstag) zurück. 3 ist Mittwoch.
+    if (today.getDay() === 3) { 
+        wednesdayBanner.innerHTML = "✨ **MITTWOCHS-DEAL!** Sie erhalten heute **zusätzlich 5% Rabatt** auf Ihre gesamte Bestellung! ✨";
+        wednesdayBanner.classList.remove('hidden');
+    }
+    // ---------------------------------------------------------------------
+
     // Event-Listener für Mengen-Inputs (aktualisieren NUR die Formular-Vorschau)
     quantityInput.addEventListener('change', updatePreviewDetails);
     quantityInput.addEventListener('keyup', updatePreviewDetails);

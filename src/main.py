@@ -159,35 +159,54 @@ async def process_image(request: Request, file: UploadFile = File(...)):
 
 
 
+# In endpoints.py
 @app.get("/cart", response_class=HTMLResponse)
 async def view_cart(request: Request):
     """Zeigt den Inhalt des Warenkorbs an."""
     cart_items: List[Dict] = request.session.get("cart", [])
     
     if not cart_items:
-        # Warenkorb leer? Zurück zur Bestellung leiten
         return RedirectResponse(url="/shop", status_code=303) 
 
-    totals = calculate_totals(cart_items)
-    
-    # ... (HTML-Generierung wie zuvor) ...
-    # Da der HTML-Code sehr lang ist, wird hier nur die relevante Weiterleitung beibehalten.
-    # Der vollständige HTML-Code der /cart-Seite bleibt identisch zu dem in der vorherigen Antwort.
+    # 'calculate_totals' MUSS angepasst werden, um total_discount zu summieren!
+    totals = calculate_totals(cart_items) 
     
     items_html = ""
     for item in cart_items:
+        # Hier die neuen Variablen abrufen
+        personalized_price = f"{item['total_personalized_price']:.2f}"
+        discount = item.get("total_discount", 0.0) # Gesamt-Rabatt des Artikels
+        unit_price_discounted = item.get("personalized_unit_price_after_discount", item['base_price'])
+        
+        # HTML für personalisierten Artikel
         description = (
             f"Größe: <strong>{item['size'].capitalize()}</strong>, "
             f"Form: <strong>{item['shape'].capitalize()}</strong>, "
             f"Füllung: <em>{item['filling'] or 'Keine'}</em>, "
             f"Toppings: <em>{item['toppings'] or 'Keine'}</em>"
         )
-        personalized_price = f"{item['total_personalized_price']:.2f}"
+        
+        # Rabatt-Hinweis hinzufügen
+        discount_badge = ""
+        if item['quantity'] >= 5:
+            # Rabatt-Badge anzeigen
+            discount_text = "Mengenrabatt (5%)" if item['quantity'] < 10 else "Mengenrabatt (10%)"
+            discount_badge = f"<p class='discount-info'>🎉 {discount_text} angewendet!</p>"
+            
+            # Preisdarstellung (Alter Preis durchgestrichen)
+            original_unit_price_str = f"({item['base_price']:.2f} €)"
+            unit_price_info = f"<p class='unit-price-info'>Stück: <span class='original-price'>{original_unit_price_str}</span> {unit_price_discounted:.2f} €</p>"
+        else:
+             unit_price_info = f"<p class='unit-price-info'>Stück: {item['base_price']:.2f} €</p>"
+             
+
         items_html += f"""
         <div class='cart-item' id='item-{item['id']}'>
             <div class='item-details'>
                 <h4>{item['name']} (Art-Nr. {item['id']})</h4>
                 <p class='description'>{description}</p>
+                {unit_price_info}
+                {discount_badge}
             </div>
             
             <form action='/cart/update/{item['id']}' method='post' class='quantity-form'>
@@ -205,19 +224,19 @@ async def view_cart(request: Request):
         </div>
         """
         
-        # Für Second-Chance Brownies (Hier nur der Lösch-Button, da die Menge im Formular geändert wurde)
+        # HTML für Second-Chance Brownies
         if item["second_chance_qty"] > 0:
             second_chance_price = f"{item['total_second_chance_price']:.2f}"
             second_chance_unit_price = item['base_price'] * 0.75
             
-            # WICHTIG: Wir verwenden eine eindeutige ID, um Second-Chance-Artikel zu identifizieren (z.B. ID-SC)
             sc_id = f"{item['id']}-sc"
             
             items_html += f"""
             <div class='cart-item second-chance' id='item-{sc_id}'>
                 <div class='item-details'>
-                    <h4 class='second-chance-title'>Second-Chance Brownies (-25%)</h4>
-                    <p class='quantity'>Menge: {item['second_chance_qty']} Stück @ {second_chance_unit_price:.2f} €</p>
+                    <h4 class='second-chance-title'>Second-Chance Brownies (-25% Rabatt!)</h4>
+                    <p class='quantity'>Menge: {item['second_chance_qty']} Stück</p>
+                    <p class='unit-price-info'>Stück: <span class='original-price'>({item['base_price']:.2f} €)</span> {second_chance_unit_price:.2f} €</p>
                 </div>
                 <div class='item-price' style='margin-left: auto;'>
                     <strong>{second_chance_price} €</strong>
@@ -227,12 +246,31 @@ async def view_cart(request: Request):
                 </form>
             </div>
             """
+    
+    # ... (Rest der `view_cart` Funktion bleibt gleich, verwendet aber `totals['total_discount']`)
+    
+    # Hinzufügen der Ersparnis zu den totals, falls calculate_totals dies nicht macht
+    total_savings = totals.get('total_discount', 0.0) # Annahme: calculate_totals summiert dies
+    
     totals['subtotal'] = format_currency(totals['subtotal'])
     totals['shipping'] = format_currency(totals['shipping'])
     totals['tax'] = format_currency(totals['tax'])
     grand_total_str = format_currency(totals['grand_total'])
-
-    return templates.TemplateResponse("cart.html", {"request": request, "items_html": items_html, "totals": totals, "grand_total_str": grand_total_str, "cart_items": cart_items, "len_cart_items": len([item for item in cart_items for _ in range(item['quantity'] + item.get('second_chance_qty', 0))])})
+    print("aoidnad", total_savings)
+    
+    # WICHTIG: Die Gesamtersparnis muss an das Template übergeben werden
+    return templates.TemplateResponse(
+        "cart.html", 
+        {
+            "request": request, 
+            "items_html": items_html, 
+            "totals": totals, 
+            "grand_total_str": grand_total_str, 
+            "cart_items": cart_items, 
+            "len_cart_items": len([item for item in cart_items for _ in range(item['quantity'] + item.get('second_chance_qty', 0))]),
+            "total_savings_str": format_currency(total_savings) # NEU: Ersparnis
+        }
+    )
 
 
 @app.post("/cart/update/{item_id}")
@@ -342,9 +380,13 @@ async def add_to_cart(
         
         # Serialisierung der Pydantic-Daten in ein JSON-kompatibles Dict
         item_dict = new_item.model_dump()
+        
+        # NEUE BERECHNUNGEN hinzufügen
+        item_dict["personalized_unit_price_after_discount"] = new_item.personalized_unit_price_after_discount
         item_dict["total_personalized_price"] = new_item.total_personalized_price
         item_dict["total_second_chance_price"] = new_item.total_second_chance_price
-        item_dict["base_price"] = new_item.base_price # Füge Basispreis hinzu
+        item_dict["total_discount"] = new_item.total_discount # WICHTIG: Gesamt-Ersparnis speichern
+        item_dict["base_price"] = new_item.base_price 
 
         request.session["cart"].append(item_dict)
         

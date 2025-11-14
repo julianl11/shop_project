@@ -168,6 +168,46 @@
                 display: none; 
             }
 
+            .discount-info { 
+                color: #d32f2f; /* Rot für den Rabatt */
+                font-weight: bold; 
+                margin: 5px 0 0; 
+                font-size: 0.9em;
+            }
+            
+            .original-price {
+                text-decoration: line-through;
+                color: #8d6e63;
+                font-weight: normal;
+            }
+            
+            .totals {
+                /* ... */
+                position: relative; /* Für die Platzierung des Sparhinweises */
+            }
+            
+            .savings-banner {
+                background-color: #e8f5e9; /* Helles Grün */
+                color: #388e3c; /* Dunkelgrün */
+                padding: 10px 20px;
+                margin-top: 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 1.2em;
+                text-align: right;
+                border: 1px solid #c8e6c9;
+            }
+            
+            /* NEU: Anpassung für die Second-Chance Anzeige */
+            .second-chance-title {
+                color: #7a5a4c !important; 
+                font-size: 1em !important; 
+                font-weight: bold;
+            }
+            .second-chance .unit-price-info {
+                font-size: 0.9em;
+            }
+
             /* Responsive Anpassung für Mobilgeräte */
             @media (max-width: 600px) {
                 .cart-item {
@@ -185,13 +225,14 @@
             }
         </style>
     </head>
-    <body>
+<body>
         <header>
             <h1>Ihr Warenkorb</h1>
             <p class="tagline">Ein Schritt entfernt von Ihrem fäncigen Brownie-Glück.</p>
         </header>
 
-        <div class="cart-summary">
+        <div class="cart-summary"> 
+            
             <h2>Ihre Artikel ({{ len_cart_items | safe }})</h2>
 
             <div class="item-list">
@@ -199,6 +240,12 @@
             </div>
             
             <div class="totals">
+                {% if total_savings_str and total_savings_str != '0,00' %}
+                <p class="savings-banner">
+                    🎉 Ihre Ersparnis: {{ total_savings_str | safe }} €
+                </p>
+                {% endif %}
+                
                 <p>Zwischensumme: {{totals['subtotal'] |safe }} €</p>
                 <p>Versandkosten: {{totals['shipping'] |safe }} €</p>
                 <p>Geschätzte MwSt (19%): {{totals['tax'] |safe }} €</p>
@@ -209,7 +256,5 @@
                 <a href="/shop" class="btn btn-back">← Weiter bestellen</a>
                 <a href="/checkout" class="btn btn-checkout">Zur Kasse gehen</a>
             </div>
-        </div>
-        
-    </body>
+        </div> </body>
     </html>
