@@ -8,6 +8,7 @@ QUANTITY_DISCOUNT_10_RATE = 0.10
 # NEU: Mittwochs-Rabatt
 WEDNESDAY_DISCOUNT_RATE = 0.05
 WEDNESDAY_WEEKDAY = 2 # Montag=0, Dienstag=1, Mittwoch=2, ...
+BASE_PRODUCT_PRICE = 5.90
 
 def calculate_totals(cart_items: List[Dict]) -> Dict:
     # ----------------------------------------------------
@@ -97,3 +98,43 @@ def calculate_totals(cart_items: List[Dict]) -> Dict:
 
 def format_currency(amount: float) -> str:
     return f"{amount:.2f}".replace('.', ',')
+
+def enrich_cart_item_prices(item: Dict) -> Dict:
+    """Fügt einem Session-Warenkorbartikel alle benötigten Preis-Felder hinzu."""
+    base_price = BASE_PRODUCT_PRICE
+    qty = item.get("quantity", 0)
+    product_id = item.get("product_id", 1) # Default to 1 (Custom)
+
+    # 1. Basispreis setzen (wird für durchgestrichene Preise benötigt)
+    item['base_price'] = base_price 
+    item['product_name'] = "Wunsch-Brownie" if product_id == 1 else "Second-Chance"
+
+    # 2. Berechnung der Preise (inkl. Rabatte)
+    unit_price_after_discount = base_price
+    total_discount = 0.0
+
+    if product_id == 1:
+        # Mengenrabatt-Logik für Custom Brownies
+        if qty >= 10:
+            unit_price_after_discount = base_price * 0.90 # 10% Rabatt
+        elif qty >= 5:
+            unit_price_after_discount = base_price * 0.95 # 5% Rabatt
+            
+        total_discount = (base_price - unit_price_after_discount) * qty
+
+    elif product_id == 2:
+        # Second-Chance Brownies (25% Rabatt)
+        unit_price_after_discount = base_price * 0.75
+        total_discount = (base_price - unit_price_after_discount) * qty
+
+    # 3. Felder setzen, die von view_cart benötigt werden
+    item['personalized_unit_price_after_discount'] = round(unit_price_after_discount, 2)
+    item['total_item_price'] = round(unit_price_after_discount * qty, 2)
+    item['total_discount'] = round(total_discount, 2)
+    
+    # Fügt die Second-Chance-Felder der alten Logik hinzu, damit view_cart funktioniert (auf 0 gesetzt)
+    item['total_personalized_price'] = item['total_item_price']
+    item['total_second_chance_price'] = 0.0
+
+    return item
+
