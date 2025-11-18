@@ -2,42 +2,42 @@
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 
-class Kunde {
-  + Kunden_ID : int
-  + Name : string
-  + Adresse : string
-  + EMail : string
+class customer {
+  + customer_id : int
+  + name : string
+  + address : string
+  + email : string
 }
 
-class Bestellung {
-  + Bestell_ID : int
-  + Kunden_ID : int
-  + Gesamtsumme : float
-  + Bestelldatum : date
-  + Status : string
+class order {
+  + order_id : int
+  + customer_id : int
+  + total_amount : float
+  + order_date : date
+  + status : string
 }
 
-class Produkt {
-  + Produkt_ID : int
-  + Name : string
-  + Beschreibung : string
-  + Basispreis : float
+class product {
+  + product_id : int
+  + name : string
+  + description : string
+  + base_price : float
 }
 
-class Bestellposition {
-  + Bestellpos_ID : int
-  + Bestell_ID : int
-  + Produkt_ID : int
-  + Menge : int
-  + Second_Chance_Menge : int
-  + Größe : string
-  + Form : string
-  + Füllung : string
-  + Toppings : string
-  + Bild_Pfad : string
+class order_item {
+  + order_item_id : int
+  + order_id : int
+  + product_id : int
+  + quantity : int
+  + second_chance_quantity : int
+  + size : string
+  + shape : string
+  + filling : string
+  + toppings : string
+  + image_path : string
 }
 
-Kunde "1" -- "1..*" Bestellung : erstellt >
-Bestellung "1" -- "1..*" Bestellposition : enthält >
-Produkt "1" -- "1..*" Bestellposition : ist Teil von >
+customer "1" -- "1..*" order : creates >
+order "1" -- "1..*" order_item : contains >
+product "1" -- "1..*" order_item : is_part_of >
 @enduml
